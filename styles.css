@@ -1,4 +1,5 @@
 :root {
+  /* Sidebar light mode */
   --sidebar-bg: #ffffff;
   --sidebar-border: #e5e7eb;
   --sidebar-text: #374151;
@@ -8,11 +9,14 @@
   --footer-bg: #f9fafb;
   --search-bg: #f7f7f8;
   --icon-color: #6b7280;
+
+  /* Chat bubble colors */
   --bubble-bg-assistant: #ffffff;
   --bubble-text: #333333;
   --bubble-border: #f0f0f0;
 }
 
+/* Dark mode overrides */
 .dark-mode {
   --sidebar-bg: #1e1f22;
   --sidebar-border: #2b2d31;
@@ -23,17 +27,20 @@
   --footer-bg: #232428;
   --search-bg: #232428;
   --icon-color: #a0a0a0;
+
   --bubble-bg-assistant: #2b2d31;
   --bubble-text: #e0e0e0;
   --bubble-border: #3a3c3f;
 }
 
+/* Global resets */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Layout: sidebar + main content */
 body {
   font-family: sans-serif;
   display: flex;
@@ -41,6 +48,7 @@ body {
   text-align: left;
 }
 
+/* Sidebar */
 .sidebar {
   width: 320px;
   height: 100vh;
@@ -56,6 +64,7 @@ body {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* Toggle button for small screens */
 .menu-toggle {
   position: fixed;
   top: 15px;
@@ -70,18 +79,20 @@ body {
   display: none;
 }
 
+/* Sidebar logo */
 .sidebar-header {
   text-align: center;
   margin-bottom: 24px;
 }
 .sidebar-logo {
-  max-width: 150px;
+  max-width: 100px;
   width: 100%;
   height: auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Search within conversations */
 .search-container {
   margin-bottom: 24px;
 }
@@ -99,6 +110,7 @@ body {
   color: var(--icon-color);
 }
 
+/* Conversations list */
 .conversations-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -119,6 +131,7 @@ body {
   color: var(--sidebar-active-text);
 }
 
+/* Sidebar footer buttons */
 .sidebar-footer {
   padding-top: 16px;
   border-top: 1px solid var(--sidebar-border);
@@ -143,6 +156,7 @@ body {
   background: var(--sidebar-hover-bg);
 }
 
+/* Main content */
 .content {
   margin-left: 320px;
   padding: 24px;
@@ -150,6 +164,7 @@ body {
   max-width: calc(100% - 320px);
 }
 
+/* Main header logo */
 .main-header {
   text-align: center;
   margin-bottom: 24px;
@@ -160,6 +175,7 @@ body {
   height: auto;
 }
 
+/* Search controls */
 .search-controls textarea {
   width: 100%;
   font-size: 1rem;
@@ -172,11 +188,13 @@ body {
 }
 .search-controls button {
   margin-bottom: 1rem;
+  position: relative;
 }
 
+/* Year filter */
 .year-filter {
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
   margin-bottom: 1.2rem;
 }
@@ -188,12 +206,13 @@ body {
 .year-filter input[type="number"] {
   width: 80px;
   font-size: 1rem;
-  padding: .3rem;
+  padding: 0.3rem;
   border: 1px solid var(--bubble-border);
   border-radius: 4px;
-  margin-left: .3rem;
+  margin-left: 0.3rem;
 }
 
+/* Chat bubble results */
 .chat-container {
   width: 100%;
 }
@@ -214,7 +233,6 @@ body {
   line-height: 1.6rem;
   padding: 1.5rem 1.8rem;
 }
-
 .bubble a {
   color: #0366d6;
   text-decoration: none;
@@ -223,6 +241,7 @@ body {
   text-decoration: underline;
 }
 
+/* Pagination */
 #pagination {
   display: flex;
   justify-content: center;
@@ -232,12 +251,32 @@ body {
   margin-bottom: 1rem;
 }
 #pagination button {
-  padding: .4rem .8rem;
+  padding: 0.4rem 0.8rem;
 }
 #pagination span {
   font-size: 1rem;
 }
 
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
 @media (max-width: 992px) {
   .menu-toggle {
     display: block;
@@ -256,6 +295,7 @@ body {
   }
 }
 
+/* Optional bottom spacing */
 body::after {
   content: '';
   display: block;
