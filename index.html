@@ -23,8 +23,11 @@
       align-items: center;
       margin-bottom: 1rem;
     }
+    /* نحمل الصورة الأصلية 1024x1024 لكن نقدّر عرضها ليتناسب مع الشاشة */
     header img {
-      max-width: 200px;
+      width: 1024px;
+      height: 1024px;
+      max-width: 100%;
       height: auto;
     }
     .search-controls {
@@ -109,7 +112,10 @@
     }
     @media (max-width: 600px) {
       body { padding: 0.5rem; }
-      header img { max-width: 150px; }
+      header img {
+        width: 300px; /* أو القيمة المناسبة للجوال */
+        height: auto;
+      }
       button, #pagination button { width: 100%; }
       .year-filter {
         flex-direction: column;
@@ -122,10 +128,11 @@
   </style>
 </head>
 <body>
-  <!-- logo only -->
+  <!-- شعار 1024×1024 -->
   <header>
     <a href="/">
-      <img src="/logo.png" alt="" />
+      <!-- width و height لتحميل الصورة الأصلية بدقة 1024x1024 -->
+      <img src="/logo.png" alt="" width="1024" height="1024" />
     </a>
   </header>
 
@@ -188,7 +195,6 @@
         const json = await res.json();
         let data = json.data || [];
 
-        // client-side year filter
         if (!isNaN(yearFrom)) {
           data = data.filter(p => p.year && p.year >= yearFrom);
         }
