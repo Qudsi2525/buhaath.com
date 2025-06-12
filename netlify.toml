@@ -1,8 +1,16 @@
 [build]
-  publish = "/"
-  functions = "netlify/functions"
+  publish = "dist"  # المسار الذي يحتوي على ملفات البناء النهائية
+  functions = "netlify/functions"  # موقع دوال Netlify
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+  force = true  # إضافة هذه الخاصية مهمة
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
