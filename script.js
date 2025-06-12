@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     body.classList.add('dark-mode');
   }
 
-  // Example conversations data (replace with real data)
+  // Example conversations data; replace with real data if available
   const conversations = [
     { id: 1, title: 'First chat', date: '2023-10-15' },
     { id: 2, title: 'Research discussion', date: '2023-10-14' },
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     conversationsList.appendChild(item);
   });
 
-  // Filter conversations list on input
+  // Filter conversations list as user types
   conversationSearch.addEventListener('input', e => {
     const term = e.target.value.toLowerCase();
     document.querySelectorAll('.conversation-item').forEach(item => {
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Search functionality with loading spinner, pagination and year filter
+// Search functionality with spinner, pagination, year filter
 let currentPage = 1;
 const limit = 20;
 
@@ -174,12 +174,6 @@ function prevPage() {
     currentPage--;
     performSearch();
   }
-}
-function nextPage() {
-  currentPage++;
-  performSearch();
-}
-
 }
 function nextPage() {
   currentPage++;
