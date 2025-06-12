@@ -1,5 +1,4 @@
 :root {
-  /* ألوان الشريط الجانبي في الوضع النهاري */
   --sidebar-bg: #ffffff;
   --sidebar-border: #e5e7eb;
   --sidebar-text: #374151;
@@ -9,14 +8,11 @@
   --footer-bg: #f9fafb;
   --search-bg: #f7f7f8;
   --icon-color: #6b7280;
-
-  /* ألوان فقاعات النتائج */
   --bubble-bg-assistant: #ffffff;
   --bubble-text: #333333;
   --bubble-border: #f0f0f0;
 }
 
-/* الوضع الليلي */
 .dark-mode {
   --sidebar-bg: #1e1f22;
   --sidebar-border: #2b2d31;
@@ -27,20 +23,17 @@
   --footer-bg: #232428;
   --search-bg: #232428;
   --icon-color: #a0a0a0;
-
   --bubble-bg-assistant: #2b2d31;
   --bubble-text: #e0e0e0;
   --bubble-border: #3a3c3f;
 }
 
-/* إعادة ضبط box-sizing */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* هيكل الصفحة: الشريط الجانبي + المحتوى */
 body {
   font-family: sans-serif;
   display: flex;
@@ -48,7 +41,6 @@ body {
   text-align: left;
 }
 
-/* الشريط الجانبي */
 .sidebar {
   width: 320px;
   height: 100vh;
@@ -64,7 +56,6 @@ body {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* زر القائمة في الشاشات الصغيرة */
 .menu-toggle {
   position: fixed;
   top: 15px;
@@ -79,17 +70,18 @@ body {
   display: none;
 }
 
-/* شعار في الشريط الجانبي */
 .sidebar-header {
   text-align: center;
   margin-bottom: 24px;
 }
 .sidebar-logo {
-  max-width: 100%;
+  max-width: 150px;
+  width: 100%;
   height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* بحث المحادثات */
 .search-container {
   margin-bottom: 24px;
 }
@@ -107,7 +99,6 @@ body {
   color: var(--icon-color);
 }
 
-/* قائمة المحادثات */
 .conversations-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -128,7 +119,6 @@ body {
   color: var(--sidebar-active-text);
 }
 
-/* أدوات أسفل الشريط */
 .sidebar-footer {
   padding-top: 16px;
   border-top: 1px solid var(--sidebar-border);
@@ -153,7 +143,6 @@ body {
   background: var(--sidebar-hover-bg);
 }
 
-/* المحتوى الرئيسي */
 .content {
   margin-left: 320px;
   padding: 24px;
@@ -161,7 +150,16 @@ body {
   max-width: calc(100% - 320px);
 }
 
-/* عناصر البحث في المحتوى */
+.main-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.header-logo {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
 .search-controls textarea {
   width: 100%;
   font-size: 1rem;
@@ -176,7 +174,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* فلتر السنة */
 .year-filter {
   display: flex;
   gap: .5rem;
@@ -197,7 +194,6 @@ body {
   margin-left: .3rem;
 }
 
-/* فقاعات النتائج */
 .chat-container {
   width: 100%;
 }
@@ -219,7 +215,6 @@ body {
   padding: 1.5rem 1.8rem;
 }
 
-/* تنسيق روابط داخل الفقاعة */
 .bubble a {
   color: #0366d6;
   text-decoration: none;
@@ -228,7 +223,6 @@ body {
   text-decoration: underline;
 }
 
-/* الصفحات (pagination) */
 #pagination {
   display: flex;
   justify-content: center;
@@ -244,7 +238,6 @@ body {
   font-size: 1rem;
 }
 
-/* استجابة للشاشات الصغيرة */
 @media (max-width: 992px) {
   .menu-toggle {
     display: block;
@@ -263,7 +256,6 @@ body {
   }
 }
 
-/* مسافة تحت body إذا لزم */
 body::after {
   content: '';
   display: block;
