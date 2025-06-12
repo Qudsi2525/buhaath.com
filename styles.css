@@ -1,5 +1,5 @@
 :root {
-  /* Sidebar light mode */
+  /* ألوان الشريط الجانبي في الوضع النهاري */
   --sidebar-bg: #ffffff;
   --sidebar-border: #e5e7eb;
   --sidebar-text: #374151;
@@ -10,13 +10,13 @@
   --search-bg: #f7f7f8;
   --icon-color: #6b7280;
 
-  /* Chat bubble colors */
+  /* ألوان فقاعات النتائج */
   --bubble-bg-assistant: #ffffff;
   --bubble-text: #333333;
   --bubble-border: #f0f0f0;
 }
 
-/* Dark mode */
+/* الوضع الليلي */
 .dark-mode {
   --sidebar-bg: #1e1f22;
   --sidebar-border: #2b2d31;
@@ -33,14 +33,14 @@
   --bubble-border: #3a3c3f;
 }
 
-/* Reset box-sizing */
+/* إعادة ضبط box-sizing */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Body and layout */
+/* هيكل الصفحة: الشريط الجانبي + المحتوى */
 body {
   font-family: sans-serif;
   display: flex;
@@ -48,7 +48,7 @@ body {
   text-align: left;
 }
 
-/* Sidebar */
+/* الشريط الجانبي */
 .sidebar {
   width: 320px;
   height: 100vh;
@@ -64,7 +64,7 @@ body {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Hidden on small until toggled */
+/* زر القائمة في الشاشات الصغيرة */
 .menu-toggle {
   position: fixed;
   top: 15px;
@@ -79,7 +79,7 @@ body {
   display: none;
 }
 
-/* Logo in sidebar */
+/* شعار في الشريط الجانبي */
 .sidebar-header {
   text-align: center;
   margin-bottom: 24px;
@@ -89,7 +89,7 @@ body {
   height: auto;
 }
 
-/* Search in conversations */
+/* بحث المحادثات */
 .search-container {
   margin-bottom: 24px;
 }
@@ -107,7 +107,7 @@ body {
   color: var(--icon-color);
 }
 
-/* Conversations list */
+/* قائمة المحادثات */
 .conversations-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -128,7 +128,7 @@ body {
   color: var(--sidebar-active-text);
 }
 
-/* Sidebar footer */
+/* أدوات أسفل الشريط */
 .sidebar-footer {
   padding-top: 16px;
   border-top: 1px solid var(--sidebar-border);
@@ -153,15 +153,15 @@ body {
   background: var(--sidebar-hover-bg);
 }
 
-/* Main content */
+/* المحتوى الرئيسي */
 .content {
-  margin-left: 320px; /* لتجنب التراكب أسفل الشريط */
+  margin-left: 320px;
   padding: 24px;
   flex-grow: 1;
   max-width: calc(100% - 320px);
 }
 
-/* Search controls */
+/* عناصر البحث في المحتوى */
 .search-controls textarea {
   width: 100%;
   font-size: 1rem;
@@ -176,7 +176,7 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Year filter */
+/* فلتر السنة */
 .year-filter {
   display: flex;
   gap: .5rem;
@@ -197,7 +197,7 @@ body {
   margin-left: .3rem;
 }
 
-/* Chat bubbles */
+/* فقاعات النتائج */
 .chat-container {
   width: 100%;
 }
@@ -205,7 +205,6 @@ body {
   display: flex;
   margin-bottom: 1.2rem;
 }
-/* always align assistant bubbles to left */
 .message.assistant {
   justify-content: flex-start;
 }
@@ -220,7 +219,16 @@ body {
   padding: 1.5rem 1.8rem;
 }
 
-/* Pagination */
+/* تنسيق روابط داخل الفقاعة */
+.bubble a {
+  color: #0366d6;
+  text-decoration: none;
+}
+.bubble a:hover {
+  text-decoration: underline;
+}
+
+/* الصفحات (pagination) */
 #pagination {
   display: flex;
   justify-content: center;
@@ -236,13 +244,11 @@ body {
   font-size: 1rem;
 }
 
-/* Responsive */
+/* استجابة للشاشات الصغيرة */
 @media (max-width: 992px) {
-  /* Show toggle */
   .menu-toggle {
     display: block;
   }
-  /* Hide sidebar by default */
   .sidebar {
     transform: translateX(-100%);
     opacity: 0;
@@ -255,4 +261,11 @@ body {
     margin-left: 0;
     max-width: 100%;
   }
+}
+
+/* مسافة تحت body إذا لزم */
+body::after {
+  content: '';
+  display: block;
+  height: 20px;
 }
