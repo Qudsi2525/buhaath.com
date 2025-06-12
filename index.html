@@ -7,9 +7,7 @@
   <!-- favicon -->
   <link rel="icon" href="/favicon.ico" />
 
-  <!-- العنوان فارغ أو عام: لا تظهر اسم الموقع -->
   <title>بحث</title>
-
   <style>
     body {
       font-family: sans-serif;
@@ -122,7 +120,7 @@
   </style>
 </head>
 <body>
-  <!-- شعار فقط، دون نص بجانبه -->
+  <!-- شعار فقط، دون نص -->
   <header>
     <a href="/">
       <img src="/logo.png" alt="" />
@@ -130,9 +128,8 @@
   </header>
 
   <div class="search-controls">
-    <textarea id="query" rows="2" placeholder="أدخل عبارة البحث"></textarea><br>
+    <textarea id="query" rows="2" placeholder="ask the research"></textarea><br>
     <button id="searchBtn" onclick="startSearch()">ابحث</button>
-    <!-- حقل فلتر بالسنة (اختياري يمكن حذفه إذا لا تريد فلترة) -->
     <div class="year-filter">
       <label>من سنة:
         <input type="number" id="yearFrom" placeholder="مثال: 2018" min="1800" max="2099">
@@ -177,7 +174,6 @@
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
 
-      // تعطيل الأزرار أثناء التحميل
       document.getElementById("searchBtn").disabled = true;
       prevBtn.disabled = true;
       nextBtn.disabled = true;
@@ -190,7 +186,6 @@
         const json = await res.json();
         let data = json.data || [];
 
-        // فلترة بالسنة client-side إذا أدخل المستخدم
         if (!isNaN(yearFrom)) {
           data = data.filter(p => p.year && p.year >= yearFrom);
         }
@@ -198,7 +193,6 @@
           data = data.filter(p => p.year && p.year <= yearTo);
         }
 
-        // عرض النتائج
         if (data.length === 0) {
           resultsEl.innerHTML = "<li>لا توجد نتائج.</li>";
         } else {
@@ -214,7 +208,6 @@
           }).join("");
         }
 
-        // pagination: نفترض أن json.data.length === limit يدل على احتمال وجود صفحة تالية
         const originalCount = (json.data || []).length;
         prevBtn.disabled = currentPage <= 1;
         nextBtn.disabled = originalCount < limit;
