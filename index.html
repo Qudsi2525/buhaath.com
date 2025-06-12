@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- favicon -->
+  <link rel="icon" href="/favicon.ico" />
+
   <title>بوحاث – بحث في Semantic Scholar</title>
   <style>
     body {
@@ -10,6 +14,16 @@
       padding: 1rem;
       max-width: 800px;
       margin: auto;
+    }
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      max-width: 200px;
+      height: auto;
     }
     h1 {
       text-align: center;
@@ -58,12 +72,20 @@
     }
     @media (max-width: 600px) {
       body { padding: 0.5rem; }
+      header img { max-width: 150px; }
       textarea { font-size: 0.9rem; }
       button { width: 100%; }
     }
   </style>
 </head>
 <body>
+  <!-- شعار الموقع -->
+  <header>
+    <a href="/">
+      <img src="/logo.png" alt="بوحاث" />
+    </a>
+  </header>
+
   <h1>بحث في Semantic Scholar</h1>
   <p>اكتب عبارة البحث ثم اضغط “ابحث”:</p>
   <textarea id="query" rows="2" placeholder="مثال: machine learning"></textarea>
