@@ -3,15 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Research Search</title>
+  <title>Research Site with Auth</title>
   <link rel="icon" href="/favicon.ico" />
   <link rel="stylesheet" href="/styles.css" />
+  <!-- Netlify Identity widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <!-- Top navbar -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <a href="/" class="logo-link">
+        <img src="/header-logo.png" alt="Main Logo" class="header-logo" />
+      </a>
+      <!-- Main menu with dropdowns -->
+      <nav class="main-menu">
+        <ul>
+          <li class="menu-item">
+            <a href="#">Literature ▾</a>
+            <ul class="dropdown">
+              <li><a href="/section/literature/poetry.html">Poetry</a></li>
+              <li><a href="/section/literature/novels.html">Novels</a></li>
+              <!-- وغيره -->
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#">Philosophy ▾</a>
+            <ul class="dropdown">
+              <li><a href="/section/philosophy/ancient.html">Ancient</a></li>
+              <li><a href="/section/philosophy/modern.html">Modern</a></li>
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#">Science ▾</a>
+            <ul class="dropdown">
+              <li><a href="/section/science/physics.html">Physics</a></li>
+              <li><a href="/section/science/biology.html">Biology</a></li>
+            </ul>
+          </li>
+          <li class="menu-item">
+            <a href="#" id="advanced-search-toggle">Advanced Search</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="nav-right">
+      <!-- Social icons -->
+      <a href="https://twitter.com/YourAccount" target="_blank" class="social-icon">
+        <!-- مثال أيقونة قلم/كتاب: استخدم SVG مناسب -->
+        <img src="/icons/twitter-literary.svg" alt="Twitter" />
+      </a>
+      <a href="https://linkedin.com/in/YourAccount" target="_blank" class="social-icon">
+        <img src="/icons/linkedin-literary.svg" alt="LinkedIn" />
+      </a>
+      <!-- زر تسجيل الدخول/الخروج -->
+      <button id="login-btn" class="login-btn">Log in</button>
+    </div>
+  </header>
+
   <!-- Sidebar toggle button for small screens -->
   <button id="menu-toggle" class="menu-toggle">☰</button>
 
-  <!-- Sidebar -->
+  <!-- Sidebar (كما سابقًا) -->
   <aside id="sidebar" class="sidebar">
     <!-- Sidebar logo -->
     <div class="sidebar-header">
@@ -19,92 +72,92 @@
         <img src="/sidebar-logo.png" alt="Sidebar Logo" class="sidebar-logo" />
       </a>
     </div>
-
-    <!-- Search conversations (example list) -->
+    <!-- Search conversations -->
     <div class="search-container">
-      <input
-        type="text"
-        class="search-bar"
-        id="conversation-search"
-        placeholder="Search conversations..."
-      />
+      <input type="text" class="search-bar" id="conversation-search" placeholder="Search conversations..." />
     </div>
-    <div class="conversations-list" id="conversations-list">
-      <!-- Populated via script.js -->
-    </div>
-
-    <!-- Sidebar footer actions -->
+    <div class="conversations-list" id="conversations-list"></div>
+    <!-- Sidebar footer -->
     <div class="sidebar-footer">
       <button id="dark-mode-toggle" class="footer-button">
         <span class="icon">🌙</span> Dark Mode
       </button>
-      <button class="footer-button">
-        <span class="icon">⚙️</span> Settings
-      </button>
-      <button class="footer-button">
-        <span class="icon">👤</span> Profile
+      <!-- إذا المستخدم مسجل يمكن إظهار روابط خاصة بحسابه -->
+      <button id="account-btn" class="footer-button" style="display:none;">
+        <span class="icon">👤</span> My Account
       </button>
     </div>
   </aside>
 
   <!-- Main content area -->
   <main class="content">
-    <!-- Header logo above search -->
-    <div class="main-header">
-      <img src="/header-logo.png" alt="Main Logo" class="header-logo" />
-    </div>
+    <!-- Sections organized -->
+    <section id="latest-articles" class="articles-section">
+      <h2>Latest Articles</h2>
+      <div id="latest-list" class="articles-list">
+        <!-- تُملأ ديناميكياً -->
+      </div>
+    </section>
+    <section id="most-read" class="articles-section">
+      <h2>Most Read</h2>
+      <div id="most-read-list" class="articles-list"></div>
+    </section>
+    <section id="featured" class="articles-section">
+      <h2>Featured Articles</h2>
+      <div id="featured-list" class="articles-list"></div>
+    </section>
 
-    <!-- Search controls -->
+    <!-- Search controls as قبل -->
     <div class="search-controls">
-      <textarea
-        id="query"
-        rows="2"
-        placeholder="Ask the research"
-      ></textarea><br />
+      <textarea id="query" rows="2" placeholder="Ask the research"></textarea><br />
       <button id="searchBtn">
         <span id="searchBtnText">Search</span>
         <span id="spinner" class="spinner" style="display: none;"></span>
       </button>
       <div class="year-filter">
         <label>Year from:
-          <input
-            type="number"
-            id="yearFrom"
-            placeholder="e.g. 2018"
-            min="1800"
-            max="2099"
-          />
+          <input type="number" id="yearFrom" placeholder="e.g. 2018" min="1800" max="2099" />
         </label>
         <label>Year to:
-          <input
-            type="number"
-            id="yearTo"
-            placeholder="e.g. 2023"
-            min="1800"
-            max="2099"
-          />
+          <input type="number" id="yearTo" placeholder="e.g. 2023" min="1800" max="2099" />
         </label>
       </div>
-
-      <!-- Search History Section -->
-      <div id="search-history-container" class="search-history-container">
-        <h3>Search History</h3>
-        <ul id="search-history-list" class="search-history-list">
-          <!-- Populated dynamically -->
-        </ul>
-        <button id="clear-history-btn" class="clear-history-btn">Clear History</button>
+      <!-- Advanced Search modal trigger -->
+      <div id="advanced-search-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+          <span id="advanced-close" class="modal-close">&times;</span>
+          <h3>Advanced Search</h3>
+          <label>Author: <input type="text" id="adv-author" placeholder="Author name" /></label><br/>
+          <label>Section: 
+            <select id="adv-section">
+              <option value="">Any</option>
+              <option value="literature">Literature</option>
+              <option value="philosophy">Philosophy</option>
+              <option value="science">Science</option>
+            </select>
+          </label><br/>
+          <label>Date from: <input type="date" id="adv-date-from" /></label><br/>
+          <label>Date to: <input type="date" id="adv-date-to" /></label><br/>
+          <button id="adv-search-btn">Search</button>
+        </div>
       </div>
     </div>
 
-    <!-- Results area: chat-style bubbles -->
+    <!-- Results -->
     <div class="chat-container" id="results-container"></div>
-
-    <!-- Pagination controls -->
     <div id="pagination" style="display:none;">
       <button id="prevBtn" onclick="prevPage()">Previous</button>
       <span id="pageInfo"></span>
       <button id="nextBtn" onclick="nextPage()">Next</button>
     </div>
+
+    <!-- Subscription section (بعد تسجيل الدخول) -->
+    <section id="subscription-section" style="display:none;">
+      <h2>Subscription Plans</h2>
+      <div class="plans">
+        <button id="subscribe-btn" class="plan-button">Subscribe</button>
+      </div>
+    </section>
   </main>
 
   <script src="/script.js"></script>
