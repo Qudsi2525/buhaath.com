@@ -20,13 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
     body.classList.add('dark-mode');
   }
 
-  // Example conversations data; replace with real data if available
+  // Example conversations data; replace with real data
   const conversations = [
     { id: 1, title: 'First chat', date: '2023-10-15' },
     { id: 2, title: 'Research discussion', date: '2023-10-14' },
     { id: 3, title: 'General questions', date: '2023-10-13' }
   ];
-
   // Populate conversations list
   conversations.forEach(conv => {
     const item = document.createElement('div');
@@ -65,7 +64,82 @@ document.addEventListener('DOMContentLoaded', () => {
       sidebar.classList.remove('open');
     }
   });
+
+  // Initialize search history display
+  initSearchHistory();
 });
+
+// Search History Functions
+
+function getSearchHistory() {
+  // returns array of strings
+  const hist = localStorage.getItem('searchHistory');
+  if (!hist) return [];
+  try {
+    const arr = JSON.parse(hist);
+    if (Array.isArray(arr)) return arr;
+  } catch {}
+  return [];
+}
+
+function saveSearchTerm(term) {
+  if (!term) return;
+  let history = getSearchHistory();
+  // Avoid duplicates: move existing to front
+  const existingIndex = history.indexOf(term);
+  if (existingIndex !== -1) {
+    history.splice(existingIndex, 1);
+  }
+  history.unshift(term);
+  // Keep max 10 entries
+  if (history.length > 10) history = history.slice(0, 10);
+  localStorage.setItem('searchHistory', JSON.stringify(history));
+  renderSearchHistory();
+}
+
+function clearSearchHistory() {
+  localStorage.removeItem('searchHistory');
+  renderSearchHistory();
+}
+
+function renderSearchHistory() {
+  const listEl = document.getElementById('search-history-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  const history = getSearchHistory();
+  history.forEach(term => {
+    const li = document.createElement('li');
+    li.textContent = term;
+    li.addEventListener('click', () => {
+      // Set the search box and re-run search
+      const queryTextarea = document.getElementById('query');
+      queryTextarea.value = term;
+      // Start search fresh
+      currentPage = 1;
+      performSearch();
+    });
+    listEl.appendChild(li);
+  });
+  // Toggle visibility if empty
+  const container = document.getElementById('search-history-container');
+  if (history.length === 0) {
+    container.style.display = 'none';
+  } else {
+    container.style.display = 'block';
+  }
+}
+
+function initSearchHistory() {
+  // Render existing history
+  renderSearchHistory();
+  // Set up clear button
+  const clearBtn = document.getElementById('clear-history-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      clearSearchHistory();
+    });
+  }
+}
 
 // Search functionality with spinner, pagination, year filter
 let currentPage = 1;
@@ -85,6 +159,9 @@ async function performSearch() {
   }
   const yearFrom = parseInt(document.getElementById("yearFrom").value);
   const yearTo = parseInt(document.getElementById("yearTo").value);
+
+  // Save term to history
+  saveSearchTerm(qRaw);
 
   const searchBtn = document.getElementById("searchBtn");
   const searchBtnText = document.getElementById("searchBtnText");
