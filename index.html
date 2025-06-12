@@ -7,7 +7,9 @@
   <!-- favicon -->
   <link rel="icon" href="/favicon.ico" />
 
-  <title>بوحاث – بحث في Semantic Scholar</title>
+  <!-- العنوان فارغ أو عام: لا تظهر اسم الموقع -->
+  <title>بحث</title>
+
   <style>
     body {
       font-family: sans-serif;
@@ -19,14 +21,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
     header img {
       max-width: 200px;
       height: auto;
     }
-    h1 {
-      text-align: center;
+    .search-controls {
       margin-bottom: 1rem;
     }
     textarea {
@@ -38,8 +39,8 @@
       resize: vertical;
     }
     button {
-      display: block;
-      margin: 1rem 0;
+      display: inline-block;
+      margin: 0.5rem 0;
       padding: .5rem 1rem;
       font-size: 1rem;
       background: #0366d6;
@@ -48,82 +49,193 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    button:hover {
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
       background: #0356b6;
     }
-    ul {
+    .year-filter {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-top: .5rem;
+    }
+    .year-filter label {
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+    }
+    .year-filter input[type="number"] {
+      width: 80px;
+      font-size: 1rem;
+      padding: .3rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: .3rem;
+    }
+    #results {
       list-style: none;
       padding: 0;
     }
-    li {
+    #results li {
       margin-bottom: 1.5rem;
       border-bottom: 1px solid #eee;
       padding-bottom: .5rem;
     }
-    a {
+    #results a {
       text-decoration: none;
       color: #0366d6;
     }
-    a:hover {
+    #results a:hover {
       text-decoration: underline;
     }
-    small {
+    #results small {
       color: #555;
+    }
+    #pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    #pagination button {
+      padding: .4rem .8rem;
+    }
+    #pagination span {
+      font-size: 1rem;
     }
     @media (max-width: 600px) {
       body { padding: 0.5rem; }
       header img { max-width: 150px; }
-      textarea { font-size: 0.9rem; }
-      button { width: 100%; }
+      button, #pagination button { width: 100%; }
+      .year-filter {
+        flex-direction: column;
+      }
+      .year-filter input[type="number"] {
+        width: 100%;
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- شعار الموقع -->
+  <!-- شعار فقط، دون نص بجانبه -->
   <header>
     <a href="/">
-      <img src="/logo.png" alt="بوحاث" />
+      <img src="/logo.png" alt="" />
     </a>
   </header>
 
-  <h1>بحث في Semantic Scholar</h1>
-  <p>اكتب عبارة البحث ثم اضغط “ابحث”:</p>
-  <textarea id="query" rows="2" placeholder="مثال: machine learning"></textarea>
-  <button onclick="search()">ابحث</button>
+  <div class="search-controls">
+    <textarea id="query" rows="2" placeholder="أدخل عبارة البحث"></textarea><br>
+    <button id="searchBtn" onclick="startSearch()">ابحث</button>
+    <!-- حقل فلتر بالسنة (اختياري يمكن حذفه إذا لا تريد فلترة) -->
+    <div class="year-filter">
+      <label>من سنة:
+        <input type="number" id="yearFrom" placeholder="مثال: 2018" min="1800" max="2099">
+      </label>
+      <label>إلى سنة:
+        <input type="number" id="yearTo" placeholder="مثال: 2023" min="1800" max="2099">
+      </label>
+    </div>
+  </div>
+
   <ul id="results"></ul>
 
+  <div id="pagination" style="display:none;">
+    <button id="prevBtn" onclick="prevPage()">السابق</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn" onclick="nextPage()">التالي</button>
+  </div>
+
   <script>
-    async function search() {
+    let currentPage = 1;
+    const limit = 20;
+
+    function startSearch() {
+      currentPage = 1;
+      performSearch();
+    }
+
+    async function performSearch() {
       const qRaw = document.getElementById("query").value.trim();
       if (!qRaw) {
         alert("يرجى إدخال عبارة البحث.");
         return;
       }
-      const q = encodeURIComponent(qRaw);
+      const yearFrom = parseInt(document.getElementById("yearFrom").value);
+      const yearTo = parseInt(document.getElementById("yearTo").value);
+
+      const query = encodeURIComponent(qRaw);
+      const url = `/api/ss-search?q=${query}&limit=${limit}&page=${currentPage}`;
       const resultsEl = document.getElementById("results");
+      const paginationEl = document.getElementById("pagination");
+      const pageInfoEl = document.getElementById("pageInfo");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      // تعطيل الأزرار أثناء التحميل
+      document.getElementById("searchBtn").disabled = true;
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
       resultsEl.innerHTML = "<li>جارٍ البحث…</li>";
+      paginationEl.style.display = "none";
+
       try {
-        const res = await fetch(`/api/ss-search?q=${q}`);
+        const res = await fetch(url);
         if (!res.ok) throw new Error("فشل الاتصال بالخادم");
         const json = await res.json();
-        const data = json.data || [];
+        let data = json.data || [];
+
+        // فلترة بالسنة client-side إذا أدخل المستخدم
+        if (!isNaN(yearFrom)) {
+          data = data.filter(p => p.year && p.year >= yearFrom);
+        }
+        if (!isNaN(yearTo)) {
+          data = data.filter(p => p.year && p.year <= yearTo);
+        }
+
+        // عرض النتائج
         if (data.length === 0) {
           resultsEl.innerHTML = "<li>لا توجد نتائج.</li>";
-          return;
+        } else {
+          resultsEl.innerHTML = data.map(paper => {
+            const authors = (paper.authors || []).map(a => a.name).join(", ");
+            return `
+              <li>
+                <a href="${paper.url}" target="_blank">
+                  <strong>${paper.title}</strong>
+                </a><br>
+                <small>${authors} — ${paper.year || 'غير معروف'}</small>
+              </li>`;
+          }).join("");
         }
-        resultsEl.innerHTML = data.map(paper => {
-          const authors = (paper.authors || []).map(a => a.name).join(", ");
-          return `
-            <li>
-              <a href="${paper.url}" target="_blank">
-                <strong>${paper.title}</strong>
-              </a><br>
-              <small>${authors} — ${paper.year}</small>
-            </li>`;
-        }).join("");
+
+        // pagination: نفترض أن json.data.length === limit يدل على احتمال وجود صفحة تالية
+        const originalCount = (json.data || []).length;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = originalCount < limit;
+        pageInfoEl.textContent = `صفحة ${currentPage}`;
+        paginationEl.style.display = "flex";
       } catch (err) {
         resultsEl.innerHTML = `<li>خطأ: ${err.message}</li>`;
+      } finally {
+        document.getElementById("searchBtn").disabled = false;
       }
+    }
+
+    function prevPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        performSearch();
+      }
+    }
+    function nextPage() {
+      currentPage++;
+      performSearch();
     }
   </script>
 </body>
