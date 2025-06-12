@@ -5,47 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>بحث Semantic Scholar</title>
   <style>
-    body { font-family: sans-serif; padding: 1rem; max-width: 800px; margin: auto; }
-    textarea { width: 100%; font-size: 1rem; padding: .5rem; }
-    button { padding: .5rem 1rem; font-size: 1rem; margin-top: .5rem; }
-    ul { list-style: none; padding: 0; }
-    li { margin-bottom: 1rem; }
-    a { text-decoration: none; color: #0366d6; }
-    a:hover { text-decoration: underline; }
-    small { color: #555; }
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      font-size: 1rem;
+      padding: .5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      display: block;
+      margin: 1rem 0;
+      padding: .5rem 1rem;
+      font-size: 1rem;
+      background: #0366d6;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0356b6;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: .5rem;
+    }
+    a {
+      text-decoration: none;
+      color: #0366d6;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    small {
+      color: #555;
+    }
   </style>
 </head>
 <body>
   <h1>بحث في Semantic Scholar</h1>
   <p>اكتب عبارة البحث ثم اضغط “ابحث”:</p>
-  <textarea id="query" rows="2" placeholder="مثال: machine learning"></textarea><br>
+  <textarea id="query" rows="2" placeholder="مثال: machine learning"></textarea>
   <button onclick="search()">ابحث</button>
   <ul id="results"></ul>
 
   <script>
     async function search() {
-      const q = encodeURIComponent(document.getElementById("query").value.trim());
-      if (!q) return alert("يرجى إدخال عبارة البحث.");
-      const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${q}&limit=5&fields=title,year,authors,url`;
+      const qRaw = document.getElementById("query").value.trim();
+      if (!qRaw) {
+        alert("يرجى إدخال عبارة البحث.");
+        return;
+      }
+      const q = encodeURIComponent(qRaw);
       const resultsEl = document.getElementById("results");
       resultsEl.innerHTML = "<li>جارٍ البحث…</li>";
+
       try {
-        const res = await fetch(url);
+        const res = await fetch(`/api/ss-search?q=${q}`);
+        if (!res.ok) throw new Error("فشل الاتصال بالخادم");
         const json = await res.json();
-        if (!json.data || !json.data.length) {
+        const data = json.data || [];
+        if (!data.length) {
           resultsEl.innerHTML = "<li>لا توجد نتائج.</li>";
           return;
         }
-        resultsEl.innerHTML = json.data.map(p => {
-          const authors = p.authors.map(a => a.name).join(", ");
+        resultsEl.innerHTML = data.map(p => {
+          const authors = (p.authors || []).map(a => a.name).join(", ");
           return `
             <li>
               <a href="${p.url}" target="_blank"><strong>${p.title}</strong></a><br>
               <small>${authors} — ${p.year}</small>
-            </li>`;
+            </li>
+          `;
         }).join("");
-      } catch (e) {
-        resultsEl.innerHTML = "<li>خطأ في الاتصال. حاول مرة أخرى.</li>";
+      } catch (err) {
+        resultsEl.innerHTML = `<li>خطأ: ${err.message}</li>`;
       }
     }
   </script>
