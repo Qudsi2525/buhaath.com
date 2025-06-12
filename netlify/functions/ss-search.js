@@ -1,10 +1,14 @@
-// netlify/functions/ss-search.js
 let cache = {};
 
 exports.handler = async function(event) {
   const params = event.queryStringParameters || {};
   const qRaw = params.q;
-  if (!qRaw) return { statusCode: 400, body: 'Missing query parameter q' };
+  if (!qRaw) {
+    return {
+      statusCode: 400,
+      body: 'Missing query parameter q'
+    };
+  }
 
   let limit = 20;
   let offset = 0;
@@ -19,6 +23,7 @@ exports.handler = async function(event) {
     const o = parseInt(params.offset);
     if (!isNaN(o) && o >= 0) offset = o;
   }
+
   const cacheKey = `${qRaw}::limit=${limit}::offset=${offset}`;
   if (cache[cacheKey] && (Date.now() - cache[cacheKey].ts) < 1000 * 60 * 10) {
     return {
@@ -27,12 +32,20 @@ exports.handler = async function(event) {
       body: JSON.stringify(cache[cacheKey].data)
     };
   }
-  const url = `https://api.semanticscholar.org/graph/v1/paper/search`
-            + `?query=${encodeURIComponent(qRaw)}`
-            + `&limit=${limit}&offset=${offset}`
-            + `&fields=title,year,authors,url`;
+
+  const apiUrl = `https://api.semanticscholar.org/graph/v1/paper/search`
+    + `?query=${encodeURIComponent(qRaw)}`
+    + `&limit=${limit}&offset=${offset}`
+    + `&fields=title,year,authors,url`;
+
   try {
-    const res = await fetch(url);
+    const res = await fetch(apiUrl);
+    if (!res.ok) {
+      return {
+        statusCode: res.status,
+        body: `Semantic Scholar API error: ${res.statusText}`
+      };
+    }
     const data = await res.json();
     cache[cacheKey] = { ts: Date.now(), data };
     return {
@@ -41,6 +54,9 @@ exports.handler = async function(event) {
       body: JSON.stringify(data)
     };
   } catch (err) {
-    return { statusCode: 500, body: err.message };
+    return {
+      statusCode: 500,
+      body: `Internal error: ${err.message}`
+    };
   }
 };
