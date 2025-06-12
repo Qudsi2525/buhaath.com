@@ -1,5 +1,5 @@
 :root {
-  /* Sidebar light mode */
+  /* Sidebar light mode colors */
   --sidebar-bg: #ffffff;
   --sidebar-border: #e5e7eb;
   --sidebar-text: #374151;
@@ -16,7 +16,7 @@
   --bubble-border: #f0f0f0;
 }
 
-/* Dark mode overrides */
+/* Dark mode override */
 .dark-mode {
   --sidebar-bg: #1e1f22;
   --sidebar-border: #2b2d31;
@@ -33,14 +33,14 @@
   --bubble-border: #3a3c3f;
 }
 
-/* Global resets */
+/* Global reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Layout: sidebar + main content */
+/* Layout container */
 body {
   font-family: sans-serif;
   display: flex;
@@ -48,9 +48,9 @@ body {
   text-align: left;
 }
 
-/* Sidebar */
+/* Sidebar styling */
 .sidebar {
-  width: 290px;
+  width: 320px;
   height: 100vh;
   position: fixed;
   top: 0;
@@ -64,7 +64,7 @@ body {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Toggle button for small screens */
+/* Toggle button for sidebar on small screens */
 .menu-toggle {
   position: fixed;
   top: 15px;
@@ -85,14 +85,14 @@ body {
   margin-bottom: 24px;
 }
 .sidebar-logo {
-  max-width: 100px;
+  max-width: 150px;
   width: 100%;
   height: auto;
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Search within conversations */
+/* Search within sidebar */
 .search-container {
   margin-bottom: 24px;
 }
@@ -131,7 +131,7 @@ body {
   color: var(--sidebar-active-text);
 }
 
-/* Sidebar footer buttons */
+/* Sidebar footer */
 .sidebar-footer {
   padding-top: 16px;
   border-top: 1px solid var(--sidebar-border);
@@ -156,7 +156,7 @@ body {
   background: var(--sidebar-hover-bg);
 }
 
-/* Main content */
+/* Main content area */
 .content {
   margin-left: 320px;
   padding: 24px;
@@ -164,7 +164,7 @@ body {
   max-width: calc(100% - 320px);
 }
 
-/* Main header logo */
+/* Header logo */
 .main-header {
   text-align: center;
   margin-bottom: 24px;
@@ -212,7 +212,7 @@ body {
   margin-left: 0.3rem;
 }
 
-/* Chat bubble results */
+/* Chat-style results */
 .chat-container {
   width: 100%;
 }
@@ -257,7 +257,7 @@ body {
   font-size: 1rem;
 }
 
-/* Spinner */
+/* Loading spinner next to button text */
 .spinner {
   display: inline-block;
   width: 16px;
@@ -269,14 +269,13 @@ body {
   margin-left: 8px;
   vertical-align: middle;
 }
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* Responsive adjustments */
+/* Responsive behavior */
 @media (max-width: 992px) {
   .menu-toggle {
     display: block;
@@ -301,3 +300,4 @@ body::after {
   display: block;
   height: 20px;
 }
+
