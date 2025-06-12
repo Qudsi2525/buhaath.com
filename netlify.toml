@@ -1,16 +1,19 @@
 [build]
-  publish = "dist"  # المسار الذي يحتوي على ملفات البناء النهائية
-  functions = "netlify/functions"  # موقع دوال Netlify
+  # إذا ليس لديك مجلد بناء (build) مثل dist، اترك النشر من الجذر:
+  publish = "/"
+  # أو غيّر إلى "dist" إذا كنت تستخدم أداة تبني وتضع الملفات النهائية في مجلد dist:
+  # publish = "dist"
+  functions = "netlify/functions"
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
-  force = true  # إضافة هذه الخاصية مهمة
+  force = true  # تأكيد توجيه API عبر Netlify Functions دائماً
 
 [[headers]]
   for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
+    Access-Control-Allow-Origin = "*"       # السماح بالوصول من أي مكان (CORS)
+    X-Frame-Options = "DENY"               # منع تضمين الصفحة في iframe
+    X-XSS-Protection = "1; mode=block"     # حماية أساسية من XSS
