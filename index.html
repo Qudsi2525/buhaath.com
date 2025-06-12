@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,13 +7,15 @@
   <!-- favicon -->
   <link rel="icon" href="/favicon.ico" />
 
-  <title>بحث</title>
+  <title>Search</title>
   <style>
     body {
       font-family: sans-serif;
       padding: 1rem;
       max-width: 800px;
       margin: auto;
+      direction: ltr;
+      text-align: left;
     }
     header {
       display: flex;
@@ -120,7 +122,7 @@
   </style>
 </head>
 <body>
-  <!-- شعار فقط، دون نص -->
+  <!-- logo only -->
   <header>
     <a href="/">
       <img src="/logo.png" alt="" />
@@ -128,14 +130,14 @@
   </header>
 
   <div class="search-controls">
-    <textarea id="query" rows="2" placeholder="ask the research"></textarea><br>
-    <button id="searchBtn" onclick="startSearch()">ابحث</button>
+    <textarea id="query" rows="2" placeholder="Ask the research"></textarea><br>
+    <button id="searchBtn" onclick="startSearch()">Search</button>
     <div class="year-filter">
-      <label>من سنة:
-        <input type="number" id="yearFrom" placeholder="مثال: 2018" min="1800" max="2099">
+      <label>Year from:
+        <input type="number" id="yearFrom" placeholder="e.g. 2018" min="1800" max="2099">
       </label>
-      <label>إلى سنة:
-        <input type="number" id="yearTo" placeholder="مثال: 2023" min="1800" max="2099">
+      <label>Year to:
+        <input type="number" id="yearTo" placeholder="e.g. 2023" min="1800" max="2099">
       </label>
     </div>
   </div>
@@ -143,9 +145,9 @@
   <ul id="results"></ul>
 
   <div id="pagination" style="display:none;">
-    <button id="prevBtn" onclick="prevPage()">السابق</button>
+    <button id="prevBtn" onclick="prevPage()">Previous</button>
     <span id="pageInfo"></span>
-    <button id="nextBtn" onclick="nextPage()">التالي</button>
+    <button id="nextBtn" onclick="nextPage()">Next</button>
   </div>
 
   <script>
@@ -160,7 +162,7 @@
     async function performSearch() {
       const qRaw = document.getElementById("query").value.trim();
       if (!qRaw) {
-        alert("يرجى إدخال عبارة البحث.");
+        alert("Please enter a search query.");
         return;
       }
       const yearFrom = parseInt(document.getElementById("yearFrom").value);
@@ -177,15 +179,16 @@
       document.getElementById("searchBtn").disabled = true;
       prevBtn.disabled = true;
       nextBtn.disabled = true;
-      resultsEl.innerHTML = "<li>جارٍ البحث…</li>";
+      resultsEl.innerHTML = "<li>Searching...</li>";
       paginationEl.style.display = "none";
 
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error("فشل الاتصال بالخادم");
+        if (!res.ok) throw new Error("Server error");
         const json = await res.json();
         let data = json.data || [];
 
+        // client-side year filter
         if (!isNaN(yearFrom)) {
           data = data.filter(p => p.year && p.year >= yearFrom);
         }
@@ -194,7 +197,7 @@
         }
 
         if (data.length === 0) {
-          resultsEl.innerHTML = "<li>لا توجد نتائج.</li>";
+          resultsEl.innerHTML = "<li>No results found.</li>";
         } else {
           resultsEl.innerHTML = data.map(paper => {
             const authors = (paper.authors || []).map(a => a.name).join(", ");
@@ -203,7 +206,7 @@
                 <a href="${paper.url}" target="_blank">
                   <strong>${paper.title}</strong>
                 </a><br>
-                <small>${authors} — ${paper.year || 'غير معروف'}</small>
+                <small>${authors} — ${paper.year || 'Unknown'}</small>
               </li>`;
           }).join("");
         }
@@ -211,10 +214,10 @@
         const originalCount = (json.data || []).length;
         prevBtn.disabled = currentPage <= 1;
         nextBtn.disabled = originalCount < limit;
-        pageInfoEl.textContent = `صفحة ${currentPage}`;
+        pageInfoEl.textContent = `Page ${currentPage}`;
         paginationEl.style.display = "flex";
       } catch (err) {
-        resultsEl.innerHTML = `<li>خطأ: ${err.message}</li>`;
+        resultsEl.innerHTML = `<li>Error: ${err.message}</li>`;
       } finally {
         document.getElementById("searchBtn").disabled = false;
       }
