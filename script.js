@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const conversationSearch = document.getElementById('conversation-search');
   const body = document.body;
 
-  // Toggle sidebar on small screens
+  // فتح/إغلاق الشريط في الشاشات الصغيرة
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('open');
   });
 
-  // Dark mode toggle
+  // الوضع الليلي
   darkModeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
@@ -20,14 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     body.classList.add('dark-mode');
   }
 
-  // Example conversations data (يمكنك استبدالها ببيانات حقيقية)
+  // بيانات محادثات نموذجية (يمكن استبدالها ببيانات فعلية)
   const conversations = [
     { id: 1, title: 'First chat', date: '2023-10-15' },
     { id: 2, title: 'Research discussion', date: '2023-10-14' },
     { id: 3, title: 'General questions', date: '2023-10-13' }
   ];
 
-  // Populate conversations list
+  // عرض قائمة المحادثات
   conversations.forEach(conv => {
     const item = document.createElement('div');
     item.className = 'conversation-item';
@@ -36,19 +36,18 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="conv-date">${conv.date}</div>
     `;
     item.addEventListener('click', () => {
-      // Mark active
+      // تفعيل العنصر المحدد
       document.querySelectorAll('.conversation-item').forEach(el => {
         el.classList.remove('active');
       });
       item.classList.add('active');
-      // هنا يمكنك تحميل محتوى المحادثة المحددة
+      // هنا يمكن تحميل محتوى المحادثة في الواجهة
       console.log('Selected conversation:', conv.id);
-      // مثلاً، تقوم بتحميل رسائل المحادثة في main أو إجراء شيء محدد
     });
     conversationsList.appendChild(item);
   });
 
-  // Filter conversations as user types
+  // فلترة قائمة المحادثات أثناء الكتابة
   conversationSearch.addEventListener('input', e => {
     const term = e.target.value.toLowerCase();
     document.querySelectorAll('.conversation-item').forEach(item => {
@@ -57,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Close sidebar when clicking outside on small screens
+  // إغلاق الشريط عند النقر خارجَه في الشاشات الصغيرة
   document.addEventListener('click', e => {
     if (window.innerWidth <= 992 && sidebar.classList.contains('open') &&
         !sidebar.contains(e.target) && e.target !== menuToggle) {
@@ -66,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Search functionality and chat bubble rendering
+// وظائف البحث في Semantic Scholar وعرض الفقاعة
 let currentPage = 1;
 const limit = 20;
 
@@ -92,12 +91,12 @@ async function performSearch() {
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
 
-  // Disable buttons during load
+  // تعطيل الأزرار أثناء التحميل
   document.getElementById("searchBtn").disabled = true;
   prevBtn.disabled = true;
   nextBtn.disabled = true;
   container.innerHTML = '';
-  // Show loading bubble
+  // عرض فقاعة تحميل
   const loadingMsg = document.createElement('div');
   loadingMsg.className = 'message assistant';
   loadingMsg.innerHTML = '<div class="bubble">Searching...</div>';
@@ -110,7 +109,7 @@ async function performSearch() {
     const json = await res.json();
     let data = json.data || [];
 
-    // Year filter client-side
+    // فلترة بالسنة client-side
     if (!isNaN(yearFrom)) {
       data = data.filter(p => p.year && p.year >= yearFrom);
     }
@@ -141,7 +140,7 @@ async function performSearch() {
       });
     }
 
-    // Pagination setup
+    // إعداد pagination
     const originalCount = (json.data || []).length;
     prevBtn.disabled = currentPage <= 1;
     nextBtn.disabled = originalCount < limit;
