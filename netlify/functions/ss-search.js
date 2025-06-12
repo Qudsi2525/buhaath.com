@@ -1,18 +1,15 @@
 // netlify/functions/ss-search.js
-
 let cache = {};
 
 exports.handler = async function(event) {
   const q = event.queryStringParameters?.q;
-  if (!q) {
-    return { statusCode: 400, body: 'Missing query parameter q' };
-  }
+  if (!q) return { statusCode:400, body:'Missing query parameter q' };
 
-  if (cache[q] && (Date.now() - cache[q].ts) < 1000 * 60 * 10) {
+  if (cache[q] && Date.now() - cache[q].ts < 600000) {
     return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(cache[q].data)
+      statusCode:200,
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(cache[q].data)
     };
   }
 
@@ -23,13 +20,13 @@ exports.handler = async function(event) {
   try {
     const res = await fetch(url);
     const data = await res.json();
-    cache[q] = { ts: Date.now(), data };
+    cache[q] = { ts:Date.now(), data };
     return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      statusCode:200,
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
     };
   } catch (err) {
-    return { statusCode: 500, body: err.message };
+    return { statusCode:500, body:err.message };
   }
 };
