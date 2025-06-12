@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بحث Semantic Scholar</title>
+  <title>بوحاث – بحث في Semantic Scholar</title>
   <style>
     body {
       font-family: sans-serif;
@@ -11,8 +11,19 @@
       max-width: 800px;
       margin: auto;
     }
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header img {
+      max-width: 200px;
+      height: auto;
+    }
     h1 {
       text-align: center;
+      margin-bottom: 1rem;
     }
     textarea {
       width: 100%;
@@ -58,6 +69,12 @@
   </style>
 </head>
 <body>
+  <header>
+    <a href="/">
+      <img src="/logo.png" alt="بوحاث" />
+    </a>
+  </header>
+
   <h1>بحث في Semantic Scholar</h1>
   <p>اكتب عبارة البحث ثم اضغط “ابحث”:</p>
   <textarea id="query" rows="2" placeholder="مثال: machine learning"></textarea>
@@ -89,8 +106,8 @@
 
         resultsEl.innerHTML = data.map(paper => {
           const authors = (paper.authors || [])
-                            .map(a => a.name)
-                            .join(", ");
+            .map(a => a.name)
+            .join(", ");
           return `
             <li>
               <a href="${paper.url}" target="_blank">
