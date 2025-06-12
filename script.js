@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const conversationSearch = document.getElementById('conversation-search');
   const body = document.body;
 
-  // فتح/إغلاق الشريط في الشاشات الصغيرة
+  // Toggle sidebar on small screens
   menuToggle.addEventListener('click', () => {
     sidebar.classList.toggle('open');
   });
 
-  // الوضع الليلي
+  // Dark mode toggle
   darkModeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-mode');
     localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
@@ -20,14 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     body.classList.add('dark-mode');
   }
 
-  // بيانات محادثات نموذجية (يمكن استبدالها ببيانات فعلية)
+  // Example conversations data (replace with real data)
   const conversations = [
     { id: 1, title: 'First chat', date: '2023-10-15' },
     { id: 2, title: 'Research discussion', date: '2023-10-14' },
     { id: 3, title: 'General questions', date: '2023-10-13' }
   ];
 
-  // عرض قائمة المحادثات
+  // Populate conversations list
   conversations.forEach(conv => {
     const item = document.createElement('div');
     item.className = 'conversation-item';
@@ -36,18 +36,16 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="conv-date">${conv.date}</div>
     `;
     item.addEventListener('click', () => {
-      // تفعيل العنصر المحدد
       document.querySelectorAll('.conversation-item').forEach(el => {
         el.classList.remove('active');
       });
       item.classList.add('active');
-      // هنا يمكن تحميل محتوى المحادثة في الواجهة
       console.log('Selected conversation:', conv.id);
     });
     conversationsList.appendChild(item);
   });
 
-  // فلترة قائمة المحادثات أثناء الكتابة
+  // Filter conversations list on input
   conversationSearch.addEventListener('input', e => {
     const term = e.target.value.toLowerCase();
     document.querySelectorAll('.conversation-item').forEach(item => {
@@ -56,16 +54,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // إغلاق الشريط عند النقر خارجَه في الشاشات الصغيرة
+  // Close sidebar when clicking outside on small screens
   document.addEventListener('click', e => {
-    if (window.innerWidth <= 992 && sidebar.classList.contains('open') &&
-        !sidebar.contains(e.target) && e.target !== menuToggle) {
+    if (
+      window.innerWidth <= 992 &&
+      sidebar.classList.contains('open') &&
+      !sidebar.contains(e.target) &&
+      e.target !== menuToggle
+    ) {
       sidebar.classList.remove('open');
     }
   });
 });
 
-// وظائف البحث في Semantic Scholar وعرض الفقاعة
+// Search functionality with loading spinner, pagination and year filter
 let currentPage = 1;
 const limit = 20;
 
@@ -75,13 +77,23 @@ function startSearch() {
 }
 
 async function performSearch() {
-  const qRaw = document.getElementById("query").value.trim();
+  const queryTextarea = document.getElementById("query");
+  const qRaw = queryTextarea.value.trim();
   if (!qRaw) {
     alert("Please enter a search query.");
     return;
   }
   const yearFrom = parseInt(document.getElementById("yearFrom").value);
   const yearTo = parseInt(document.getElementById("yearTo").value);
+
+  const searchBtn = document.getElementById("searchBtn");
+  const searchBtnText = document.getElementById("searchBtnText");
+  const spinner = document.getElementById("spinner");
+
+  // Show loading state
+  searchBtnText.textContent = "Searching...";
+  spinner.style.display = "inline-block";
+  searchBtn.disabled = true;
 
   const query = encodeURIComponent(qRaw);
   const url = `/api/ss-search?q=${query}&limit=${limit}&page=${currentPage}`;
@@ -91,12 +103,8 @@ async function performSearch() {
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
 
-  // تعطيل الأزرار أثناء التحميل
-  document.getElementById("searchBtn").disabled = true;
-  prevBtn.disabled = true;
-  nextBtn.disabled = true;
   container.innerHTML = '';
-  // عرض فقاعة تحميل
+  // Show a loading bubble as well
   const loadingMsg = document.createElement('div');
   loadingMsg.className = 'message assistant';
   loadingMsg.innerHTML = '<div class="bubble">Searching...</div>';
@@ -109,7 +117,7 @@ async function performSearch() {
     const json = await res.json();
     let data = json.data || [];
 
-    // فلترة بالسنة client-side
+    // Client-side year filter
     if (!isNaN(yearFrom)) {
       data = data.filter(p => p.year && p.year >= yearFrom);
     }
@@ -140,7 +148,7 @@ async function performSearch() {
       });
     }
 
-    // إعداد pagination
+    // Pagination setup
     const originalCount = (json.data || []).length;
     prevBtn.disabled = currentPage <= 1;
     nextBtn.disabled = originalCount < limit;
@@ -150,10 +158,14 @@ async function performSearch() {
     container.innerHTML = '';
     const errMsg = document.createElement('div');
     errMsg.className = 'message assistant first';
-    errMsg.innerHTML = `<div class="bubble">Error: ${err.message}</div>`;
+    errMsg.innerHTML = `<div class="bubble">Sorry, an error occurred. Please try again later.</div>`;
     container.appendChild(errMsg);
+    console.error(err);
   } finally {
-    document.getElementById("searchBtn").disabled = false;
+    // Restore button state
+    searchBtnText.textContent = "Search";
+    spinner.style.display = "none";
+    searchBtn.disabled = false;
   }
 }
 
@@ -162,6 +174,12 @@ function prevPage() {
     currentPage--;
     performSearch();
   }
+}
+function nextPage() {
+  currentPage++;
+  performSearch();
+}
+
 }
 function nextPage() {
   currentPage++;
