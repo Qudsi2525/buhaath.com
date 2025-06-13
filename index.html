@@ -26,12 +26,61 @@
       placeholder="Ask the research..."
       style="width: 100%; padding: 1px 1px; border-radius: 1px; border: 1px solid #f5f5f7; font-size: 16px;"
     />
-    <button onclick="search()" style="margin-top: 16px; padding: 10px 20px; font-size: 16px; border-radius: 10px; background-color: #7C4DFF; color: white; border: none; cursor: pointer;">
+    <button id="searchBtn" onclick="search()" style="margin-top: 16px; padding: 10px 20px; font-size: 16px; border-radius: 10px; background-color: #7C4DFF; color: white; border: none; cursor: pointer;">
       Search
     </button>
   </div>
 </div>
 
-  <script src="script.js"></script>
+<!-- نتائج البحث -->
+<div id="results" style="max-width: 900px; margin: 20px auto; padding: 0 10px;"></div>
+
+<script>
+  async function search() {
+    const query = document.getElementById("query").value.trim();
+    const searchBtn = document.getElementById("searchBtn");
+    const results = document.getElementById("results");
+
+    if (!query) {
+      alert("Please enter a search term.");
+      return;
+    }
+
+    // مؤشر تحميل
+    searchBtn.textContent = "Searching...";
+    searchBtn.disabled = true;
+    results.innerHTML = "";
+
+    try {
+      const response = await fetch(`https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=20&fields=title,abstract,authors,year`);
+      const data = await response.json();
+
+      if (!data.data || data.data.length === 0) {
+        results.innerHTML = "<p>No results found.</p>";
+      } else {
+        data.data.forEach(paper => {
+          const div = document.createElement("div");
+          div.style = "background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left;";
+
+          div.innerHTML = `
+            <h3 style="margin: 0 0 8px 0; font-size: 18px;">${paper.title}</h3>
+            <p style="margin: 4px 0; color: #555;"><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
+            <p style="margin: 4px 0; color: #555;"><strong>Published:</strong> ${paper.year || "N/A"}</p>
+            <p style="margin-top: 8px; color: #333;"><strong>Abstract:</strong><br>${paper.abstract || "No abstract available."}</p>
+          `;
+
+          results.appendChild(div);
+        });
+      }
+    } catch (error) {
+      results.innerHTML = "<p>Error fetching results. Please try again later.</p>";
+    }
+
+    // إعادة الزر
+    searchBtn.textContent = "Search";
+    searchBtn.disabled = false;
+  }
+</script>
+
 </body>
 </html>
