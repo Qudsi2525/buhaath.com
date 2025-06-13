@@ -23,15 +23,15 @@ header {
 }
 
 .search-box {
-  margin-top: 20px;
+  margin-top: 50px;
 }
 
 .search-box input {
   width: 50%;
-  padding: 12px;
+  padding: 20px;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 2px solid #ccc;
+  border-radius: 16px;
 }
 
 .search-box button {
