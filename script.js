@@ -1,8 +1,5 @@
 async function search() {
   const query = document.getElementById("query").value.trim();
-  const year = document.getElementById("filter-year").value.trim();
-  const author = document.getElementById("filter-author").value.trim();
-
   if (!query) {
     alert("Please enter a search query.");
     return;
@@ -16,20 +13,14 @@ async function search() {
   const resultsDiv = document.getElementById("results");
   resultsDiv.innerHTML = "";
 
-  const filteredPapers = data.data.filter(paper => {
-    const matchesYear = year ? paper.year == year : true;
-    const matchesAuthor = author ? paper.authors.some(a => a.name.toLowerCase().includes(author.toLowerCase())) : true;
-    return matchesYear && matchesAuthor;
-  });
-
-  if (filteredPapers.length === 0) {
+  if (!data.data || data.data.length === 0) {
     resultsDiv.innerHTML = "<p>No results found.</p>";
     return;
   }
 
-  filteredPapers.forEach(paper => {
+  data.data.forEach(paper => {
     const el = document.createElement("div");
-    el.classList.add("bubble");
+    el.classList.add("result");
     el.innerHTML = `
       <h3>${paper.title}</h3>
       <p><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
@@ -39,8 +30,3 @@ async function search() {
     resultsDiv.appendChild(el);
   });
 }
-
-document.getElementById("advanced-search-btn").onclick = () => {
-  const filters = document.getElementById("advanced-filters");
-  filters.style.display = filters.style.display === "none" ? "block" : "none";
-};
