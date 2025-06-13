@@ -7,14 +7,8 @@ body {
   text-align: center;
 }
 
-header {
-  background: #fff;
-  padding: 0px;
-  border-bottom: 1px solid #ddd;
-}
-
 .logo {
-  height: 48px;
+  height: 100px;
 }
 
 .main-title {
