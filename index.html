@@ -3,80 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search with Sidebar</title>
-  <link rel="icon" href="/favicon.ico" />
-  <link rel="stylesheet" href="/styles.css">
+  <title>BuhaaTh</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- زر فتح القائمة في الشاشات الصغيرة -->
-  <button id="menu-toggle" class="menu-toggle">☰</button>
+<div style="max-width: 720px; margin: 40px auto 20px auto; text-align: center;">
+  <!-- الشعار -->
+  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 250px; height: auto; margin-bottom: 16px;">
 
-  <!-- الشريط الجانبي -->
-  <aside id="sidebar" class="sidebar">
-    <!-- شعار مختلف في الشريط الجانبي -->
-    <div class="sidebar-header">
-      <a href="/">
-        <!-- استخدم ملف شعار خاص بالـ sidebar، مثلاً sidebar-logo.png -->
-        <img src="/sidebar-logo.png" alt="Sidebar Logo" class="sidebar-logo">
-      </a>
-    </div>
+  <!-- الجملة التعريفية -->
+  <p style="font-size: 14px; color: #333; margin-bottom: 20px;">
+    What is your research field today? Start typing and I'll assist
+  </p>
 
-    <!-- شريط البحث في قائمة المحادثات -->
-    <div class="search-container">
-      <input type="text" class="search-bar" id="conversation-search" placeholder="Search conversations...">
-    </div>
+  <!-- مربع البحث -->
+  <div style="background: #fff; border: 1px solid #ccc; border-radius: 9px; box-shadow: 0 3px 9px rgba(0,0,0,0.0); padding: 9px 10px;">
+    <input
+      type="text"
+      id="query"
+      placeholder="Ask the research..."
+      style="width: 100%; padding: 4px 1px; border-radius: 7px; border: 1px solid #ccc; font-size: 16px;"
+    />
+    <button onclick="search()" style="margin-top: 16px; padding: 10px 20px; font-size: 16px; border-radius: 10px; background-color: #007bff; color: white; border: none; cursor: pointer;">
+      Search
+    </button>
+  </div>
+</div>
 
-    <!-- قائمة المحادثات -->
-    <div class="conversations-list" id="conversations-list">
-      <!-- تُملأ ديناميكياً في script.js -->
-    </div>
-
-    <!-- أدوات تحكم أسفل الشريط -->
-    <div class="sidebar-footer">
-      <button id="dark-mode-toggle" class="footer-button">
-        <span class="icon">🌙</span> Dark Mode
-      </button>
-      <button class="footer-button">
-        <span class="icon">⚙️</span> Settings
-      </button>
-      <button class="footer-button">
-        <span class="icon">👤</span> Profile
-      </button>
-    </div>
-  </aside>
-
-  <!-- المحتوى الرئيسي -->
-  <main class="content">
-    <!-- الشعار المركزي أعلى مربع البحث -->
-    <div class="main-header">
-      <img src="/header-logo.png" alt="Main Logo" class="header-logo">
-    </div>
-
-    <!-- صندوق البحث الأساسي -->
-    <div class="search-controls">
-      <textarea id="query" rows="2" placeholder="Ask the research"></textarea><br>
-      <button id="searchBtn" onclick="startSearch()">Search</button>
-      <div class="year-filter">
-        <label>Year from:
-          <input type="number" id="yearFrom" placeholder="e.g. 2018" min="1800" max="2099">
-        </label>
-        <label>Year to:
-          <input type="number" id="yearTo" placeholder="e.g. 2023" min="1800" max="2099">
-        </label>
-      </div>
-    </div>
-
-    <!-- حاوية عرض نتائج البحث كفقاعات -->
-    <div class="chat-container" id="results-container"></div>
-
-    <!-- أزرار الصفحات -->
-    <div id="pagination" style="display:none;">
-      <button id="prevBtn" onclick="prevPage()">Previous</button>
-      <span id="pageInfo"></span>
-      <button id="nextBtn" onclick="nextPage()">Next</button>
-    </div>
-  </main>
-
-  <script src="/script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
