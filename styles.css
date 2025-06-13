@@ -22,10 +22,10 @@ body {
 
 .search-box input {
   width: 50%;
-  padding: 20px;
+  padding: 50px;
   font-size: 1rem;
-  border: 2px solid #ccc;
-  border-radius: 16px;
+  border: 3px solid #ccc;
+  border-radius: 20px;
 }
 
 .search-box button {
