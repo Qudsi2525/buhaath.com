@@ -12,7 +12,7 @@ body {
 }
 
 .main-title {
-  margin-top: 300px;
+  margin-top: 500px;
   font-size: 2rem;
 }
 
@@ -33,7 +33,7 @@ body {
   margin-left: 10px;
   font-size: 1rem;
   border-radius: 8px;
-  background-color: #9400D3;
+  background-color: #7C4DFF;
   color: #fff;
   border: none;
   cursor: pointer;
