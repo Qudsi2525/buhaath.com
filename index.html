@@ -3,47 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BuhaaTh - Academic AI Search</title>
+  <title>BuhaaTh – Academic Research AI</title>
+  <link rel="icon" href="favicon.ico" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="BuhaaTh Logo" class="main-logo" />
-    <nav class="top-nav">
+    <img src="logo.png" alt="BuhaaTh Logo" class="logo" />
+    <nav>
       <ul>
-        <li><a href="#">Literature</a></li>
-        <li><a href="#">Philosophy</a></li>
-        <li><a href="#">Science</a></li>
-        <li><a href="#">More ▼</a></li>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Latest Articles</a></li>
+        <li><a href="#">Popular</a></li>
+        <li><a href="#">Selected</a></li>
+        <li class="dropdown">
+          <a href="#">Categories</a>
+          <div class="dropdown-content">
+            <a href="#">Literature</a>
+            <a href="#">Philosophy</a>
+            <a href="#">Science</a>
+          </div>
+        </li>
       </ul>
     </nav>
+    <div class="social-icons">
+      <a href="https://twitter.com" target="_blank">🐦</a>
+      <a href="https://linkedin.com" target="_blank">🔗</a>
+    </div>
   </header>
 
-  <aside class="sidebar">
-    <input type="text" class="search-bar" placeholder="Search conversations..." />
-    <div class="conversation-list">
-      <div class="conversation-item">Discussion 1</div>
-      <div class="conversation-item">Study Notes</div>
-      <div class="conversation-item">Saved Articles</div>
+  <main>
+    <h1 class="main-title">Ask the Research</h1>
+    <div class="search-box">
+      <input type="text" id="query" placeholder="Search any academic topic..." />
+      <button onclick="search()">🔍</button>
     </div>
-    <div class="sidebar-footer">
-      <a href="#"><img src="twitter-icon.png" class="icon" alt="Twitter" /></a>
-      <a href="#"><img src="linkedin-icon.png" class="icon" alt="LinkedIn" /></a>
+    <button id="advanced-search-btn">Advanced Search</button>
+    <div id="advanced-filters" style="display: none;">
+      <input type="text" id="filter-year" placeholder="Year (e.g. 2023)" />
+      <input type="text" id="filter-author" placeholder="Author name" />
     </div>
-  </aside>
-
-  <main class="content">
-    <h1>Welcome to BuhaaTh</h1>
-    <form id="searchForm">
-      <input type="text" id="query" placeholder="Ask the research..." />
-      <button type="submit">Search</button>
-      <select id="yearFilter">
-        <option value="">All Years</option>
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-      </select>
-    </form>
     <div id="results"></div>
   </main>
 
