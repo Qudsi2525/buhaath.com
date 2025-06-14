@@ -1,25 +1,40 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login – BuhaaTh</title>
-  <link rel="icon" href="favicon.ico" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <div style="max-width:900px; margin:40px auto; text-align:center;">
-    <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width:250px;height:auto;margin-bottom:16px;">
-    <p style="font-size:14px;color:#333;margin-bottom:20px;">Log in to continue</p>
-    <div style="background:#f5f5f7;border:5px solid #f5f5f7;border-radius:10px;box-shadow:0 3px 5px rgba(1,1,1,1.1);padding:20px;">
-      <input type="email" placeholder="Email" style="width:100%;padding:8px;margin:8px 0;border:1px solid #ddd;border-radius:6px;">
-      <input type="password" placeholder="Password" style="width:100%;padding:8px;margin:8px 0;border:1px solid #ddd;border-radius:6px;">
-      <button style="margin-top:16px;padding:10px 20px;font-size:16px;border-radius:10px;background-color:#7C4DFF;color:#fff;border:none;cursor:pointer;">Login</button>
-    </div>
-  </div>
+<body style="text-align:center; padding: 40px;">
+
+  <!-- رسالة نجاح -->
+  <div id="message" style="display: none; background-color: #dff0d8; color: #3c763d; padding: 12px; border-radius: 8px; max-width: 500px; margin: 20px auto;"></div>
+
+  <h2>Login</h2>
+  <form onsubmit="return login(event)" style="max-width: 400px; margin: auto;">
+    <input type="email" id="loginEmail" placeholder="Email" required style="padding: 10px; width: 100%; margin-bottom: 10px;" />
+    <input type="password" id="loginPassword" placeholder="Password" required style="padding: 10px; width: 100%; margin-bottom: 10px;" />
+    <button type="submit" style="padding: 10px 20px;">Login</button>
+  </form>
+
+  <p><a href="index.html">← Back to Home</a></p>
+
+  <script>
+    function login(event) {
+      event.preventDefault();
+
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      // تحقق وهمي فقط
+      if (email && password) {
+        const message = document.getElementById("message");
+        message.textContent = "Login successful. Welcome!";
+        message.style.display = "block";
+      }
+    }
+  </script>
+
 </body>
-    <div style="text-align: center; margin-top: 30px;">
-  <a href="index.html" style="padding: 10px 20px; background: #7C4DFF; color: white; text-decoration: none; border-radius: 8px;">
-    ← Back to Home
-  </a>
-</div>
 </html>
