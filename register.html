@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – BuhaaTh</title>
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div style="max-width: 400px; margin: 80px auto; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;">
+  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 180px; margin-bottom: 20px;" />
+  <h2>Create your account</h2>
+
+  <input type="text" id="username" placeholder="Username" style="width: 100%; margin-bottom: 12px; padding: 10px;" />
+  <input type="email" id="email" placeholder="Email" style="width: 100%; margin-bottom: 12px; padding: 10px;" />
+  <input type="password" id="password" placeholder="Password" style="width: 100%; margin-bottom: 16px; padding: 10px;" />
+
+  <button onclick="register()" style="padding: 10px 20px; background: #7C4DFF; color: white; border: none; border-radius: 6px; cursor: pointer;">
+    Register
+  </button>
+
+  <p id="reg-message" style="margin-top: 12px;"></p>
+
+  <a href="index.html" style="display: block; margin-top: 20px; color: #7C4DFF;">← Back to Home</a>
+</div>
+
+<script>
+function register() {
+  const name = document.getElementById("username").value;
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  const message = document.getElementById("reg-message");
+
+  if (!name || !email || !pass) {
+    message.textContent = "Please fill all fields.";
+    message.style.color = "red";
+    return;
+  }
+
+  localStorage.setItem("user", JSON.stringify({ name, email, pass }));
+  message.textContent = "Registration successful!";
+  message.style.color = "green";
+}
+</script>
+
+</body>
+</html>
