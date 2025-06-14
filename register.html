@@ -4,46 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register – BuhaaTh</title>
-  <link rel="icon" href="favicon.ico" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body style="text-align:center; padding: 40px;">
 
-<div style="max-width: 400px; margin: 80px auto; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;">
-  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 180px; margin-bottom: 20px;" />
-  <h2>Create your account</h2>
+  <!-- الشعار -->
+  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 200px; height: auto; margin-bottom: 16px;">
 
-  <input type="text" id="username" placeholder="Username" style="width: 100%; margin-bottom: 12px; padding: 10px;" />
-  <input type="email" id="email" placeholder="Email" style="width: 100%; margin-bottom: 12px; padding: 10px;" />
-  <input type="password" id="password" placeholder="Password" style="width: 100%; margin-bottom: 16px; padding: 10px;" />
+  <h2 style="margin-bottom: 20px;">Register</h2>
 
-  <button onclick="register()" style="padding: 10px 20px; background: #7C4DFF; color: white; border: none; border-radius: 6px; cursor: pointer;">
-    Register
-  </button>
+  <!-- رسالة نجاح -->
+  <div id="message" style="display: none; background-color: #d4edda; color: #155724; padding: 10px; border-radius: 6px; max-width: 400px; margin: 0 auto 20px;"></div>
 
-  <p id="reg-message" style="margin-top: 12px;"></p>
+  <form onsubmit="return register(event)" style="max-width: 400px; margin: auto;">
+    <input type="text" id="registerName" placeholder="Name" required style="padding: 10px; width: 100%; margin-bottom: 10px;" />
+    <input type="email" id="registerEmail" placeholder="Email" required style="padding: 10px; width: 100%; margin-bottom: 10px;" />
+    <input type="password" id="registerPassword" placeholder="Password" required style="padding: 10px; width: 100%; margin-bottom: 10px;" />
+    <button type="submit" style="padding: 10px 20px;">Register</button>
+  </form>
 
-  <a href="index.html" style="display: block; margin-top: 20px; color: #7C4DFF;">← Back to Home</a>
-</div>
+  <p style="margin-top: 20px;"><a href="index.html">← Back to Home</a></p>
 
-<script>
-function register() {
-  const name = document.getElementById("username").value;
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-  const message = document.getElementById("reg-message");
+  <script>
+    function register(event) {
+      event.preventDefault();
+      const name = document.getElementById("registerName").value;
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
 
-  if (!name || !email || !pass) {
-    message.textContent = "Please fill all fields.";
-    message.style.color = "red";
-    return;
-  }
+      if (name && email && password) {
+        const message = document.getElementById("message");
+        message.textContent = "Registration successful! Redirecting to homepage...";
+        message.style.display = "block";
 
-  localStorage.setItem("user", JSON.stringify({ name, email, pass }));
-  message.textContent = "Registration successful!";
-  message.style.color = "green";
-}
-</script>
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000); // تحويل بعد ثانيتين
+      }
+    }
+  </script>
 
 </body>
 </html>
