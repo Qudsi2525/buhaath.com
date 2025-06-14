@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Grammar Check – BuhaaTh</title><link rel="icon" href="favicon.ico"/><link rel="stylesheet" href="styles.css"/>
+</head><body>
+  <div style="max-width:900px;margin:40px auto;text-align:center;">
+    <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width:250px;height:auto;margin-bottom:16px;">
+    <p style="font-size:14px;color:#333;margin-bottom:20px;">Paste text to grammar-check (Ar/En)</p>
+    <div style="background:#f5f5f7;border:5px solid #f5f5f7;border-radius:10px;box-shadow:0 3px 5px rgba(1,1,1,1.1);padding:20px;">
+      <textarea id="textCheck" style="width:100%;height:150px;padding:8px;border:1px solid #ddd;border-radius:6px;"></textarea>
+      <button onclick="checkGrammar()" style="margin-top:16px;padding:10px 20px;font-size:16px;border-radius:10px;background-color:#7C4DFF;color:#fff;border:none;cursor:pointer;">Check</button>
+      <div id="grammarResult" style="margin-top:20px;color:#333;text-align:left;"></div>
+    </div>
+  </div>
+  <script>
+    async function checkGrammar() {
+      const txt = document.getElementById('textCheck').value;
+      document.getElementById('grammarResult').innerHTML = 'Checking...';
+      const res = await fetch('https://api.languagetoolplus.com/v2/check', {
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({ text: txt, language: 'auto' })
+      });
+      const j = await res.json();
+      if(j.matches?.length){
+        const out = j.matches.map(m => `· ${m.message} at "${txt.substring(m.offset, m.offset + m.length)}"`).join('<br>');
+        document.getElementById('grammarResult').innerHTML = out;
+      } else document.getElementById('grammarResult').innerHTML = 'No issues found.';
+    }
+  </script>
+</body></html>
