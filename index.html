@@ -67,19 +67,20 @@
 
     .tools {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 25px;
+      text-align: left;
     }
 
     .tools a {
       background: rgba(255,255,255,0.15);
-      padding: 10px 16px;
+      padding: 12px;
       border-radius: 10px;
       color: white;
       text-decoration: none;
       font-size: 14px;
+      display: block;
     }
 
     .result {
@@ -112,6 +113,7 @@
 </head>
 <body>
 
+<!-- خلفية Particles -->
 <div id="particles-js"></div>
 
 <!-- شريط علوي -->
@@ -121,6 +123,7 @@
   <a href="logout.html">🚪 Logout</a>
 </div>
 
+<!-- المحتوى -->
 <div class="container">
   <img src="header-logo.png" style="max-width: 240px;" alt="Logo" />
   <p>What is your research field today?</p>
@@ -128,7 +131,8 @@
   <!-- مربع البحث -->
   <div class="search-box">
     <input type="text" id="query" placeholder="Ask the research..." />
-    
+
+    <!-- الفلاتر -->
     <div class="filters">
       <select id="fieldFilter">
         <option value="">📚 Filter by Field (Optional)</option>
@@ -139,7 +143,6 @@
         <option value="economics">Economics</option>
         <option value="psychology">Psychology</option>
         <option value="chemistry">Chemistry</option>
-        <!-- Add more if needed -->
       </select>
       <input type="number" id="yearFilter" placeholder="📆 Filter by Year (Optional)" />
       <button onclick="clearFilters()" class="remove-filters">🧹 Clear Filters</button>
@@ -147,19 +150,20 @@
 
     <button id="searchBtn" onclick="search()">🔍 Search</button>
 
+    <!-- الأدوات -->
     <div class="tools">
-      <a href="summary.html">📚 Summarizer</a>
-      <a href="citation.html">📝 Citation Generator</a>
-      <a href="plagiarism.html">📄 Plagiarism Check</a>
-      <a href="grammar.html">✍️ Grammar Checker</a>
+      <a href="summary.html">📚 Summarizer – Summarize any academic text.</a>
+      <a href="citation.html">📝 Citation Generator – Generate references in APA or MLA.</a>
+      <a href="plagiarism.html">📄 Plagiarism Check – Detect potential plagiarism.</a>
+      <a href="grammar.html">✍️ Grammar Checker – Correct grammar and spelling.</a>
     </div>
   </div>
 
-  <!-- النتائج -->
+  <!-- نتائج البحث -->
   <div id="results"></div>
 </div>
 
-<!-- نتائج البحث -->
+<!-- سكربت البحث -->
 <script>
   async function search() {
     const query = document.getElementById("query").value.trim();
