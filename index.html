@@ -9,48 +9,63 @@
 </head>
 <body>
 
+<!-- زر تسجيل الدخول والتسجيل والخروج -->
+<div style="position: absolute; top: 20px; right: 30px; z-index: 10;">
+  <a href="login.html" style="margin-right: 10px; color: #7C4DFF; text-decoration: none; font-weight: bold;">🔐 Login</a>
+  <a href="register.html" style="margin-right: 10px; color: #7C4DFF; text-decoration: none; font-weight: bold;">➕ Register</a>
+  <a href="#" onclick="logout()" style="color: #ff4d4d; text-decoration: none; font-weight: bold;">🚪 Logout</a>
+</div>
+
 <!-- خلفية Particles -->
 <div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
 
-<!-- ✨ تصميم واجهة البحث مع الخلفية -->
 <div style="max-width: 900px; margin: 60px auto; text-align: center;">
-  <!-- الشعار -->
   <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 240px; margin-bottom: 16px;">
-
-  <!-- الجملة التعريفية -->
   <p style="font-size: 15px; color: #fff; margin-bottom: 24px;">What is your research field today?</p>
 
-  <!-- مربع البحث -->
-  <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 30px rgba(124, 77, 255, 0.3);">
-    <input type="text" id="query" placeholder="Ask the research..." style="width: 100%; padding: 5px; border-radius: 6px; border: 1px solid #ccc; background: rgba(255,255,255,0.2); color: #fff; margin-bottom: 10px;">
+  <!-- مربع البحث والأدوات -->
+  <div style="padding: 24px; background: #fff; border-radius: 20px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);">
+    <input type="text" id="query" placeholder="Ask the research..." style="width: 100%; padding: 5px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 12px;">
     <button id="searchBtn" onclick="search()" style="padding: 12px 24px; border: none; background: #7C4DFF; border-radius: 14px; color: white;">Search</button>
-  </div>
 
-  <!-- روابط الأدوات -->
-  <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
-    <a href="register.html" style="color:#fff; text-decoration:none;">➕ Register</a>
-    <a href="login.html" style="color:#fff; text-decoration:none;">🔐 Login</a>
-    <a href="plagiarism.html" style="color:#fff; text-decoration:none;">📄 Plagiarism</a>
-    <a href="citation.html" style="color:#fff; text-decoration:none;">📝 Citation</a>
-    <a href="grammar.html" style="color:#fff; text-decoration:none;">✍️ Grammar</a>
-    <a href="summary.html" style="color:#fff; text-decoration:none;">📚 Summary</a>
+    <!-- الأدوات أسفل زر البحث -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 24px;">
+      <a href="plagiarism.html" style="text-decoration:none; color:#333;">
+        📄 Plagiarism <br><small style="font-size: 12px;">Check for copied content</small>
+      </a>
+      <a href="citation.html" style="text-decoration:none; color:#333;">
+        📝 Citation <br><small style="font-size: 12px;">Generate APA/MLA references</small>
+      </a>
+      <a href="grammar.html" style="text-decoration:none; color:#333;">
+        ✍️ Grammar <br><small style="font-size: 12px;">Fix language & grammar</small>
+      </a>
+      <a href="summary.html" style="text-decoration:none; color:#333;">
+        📚 Summary <br><small style="font-size: 12px;">Summarize long texts</small>
+      </a>
+    </div>
   </div>
 </div>
 
 <!-- نتائج البحث -->
 <div id="results" style="max-width: 900px; margin: 20px auto; padding: 0 10px;"></div>
 
-<!-- سكربت البحث -->
+<!-- تأثير صوتي -->
+<audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2023/03/01/audio_9b2e6b9fa0.mp3?filename=click-124467.mp3"></audio>
+
+<!-- سكريبت البحث -->
 <script>
   async function search() {
     const query = document.getElementById("query").value.trim();
     const searchBtn = document.getElementById("searchBtn");
     const results = document.getElementById("results");
+    const clickSound = document.getElementById("clickSound");
 
     if (!query) {
       alert("Please enter a search term.");
       return;
     }
+
+    clickSound.play();
 
     searchBtn.textContent = "Searching...";
     searchBtn.disabled = true;
@@ -66,27 +81,31 @@
         data.data.forEach(paper => {
           const div = document.createElement("div");
           div.style = "background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left;";
-
           div.innerHTML = `
             <h3 style="margin: 0 0 8px 0; font-size: 18px;">${paper.title}</h3>
             <p style="margin: 4px 0; color: #555;"><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
             <p style="margin: 4px 0; color: #555;"><strong>Published:</strong> ${paper.year || "N/A"}</p>
             <p style="margin-top: 8px; color: #333;"><strong>Abstract:</strong><br>${paper.abstract || "No abstract available."}</p>
           `;
-
           results.appendChild(div);
         });
       }
     } catch (error) {
-      results.innerHTML = "<p>Error: Please try again later or use English search terms.</p>";
+      results.innerHTML = "<p>Error fetching results. Please enter the search text in English.</p>";
     }
 
     searchBtn.textContent = "Search";
     searchBtn.disabled = false;
   }
+
+  function logout() {
+    sessionStorage.removeItem("loggedInUser");
+    alert("You have been logged out.");
+    window.location.href = "index.html";
+  }
 </script>
 
-<!-- مكتبة الخلفية -->
+<!-- مكتبة Particles -->
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <script>
   particlesJS("particles-js", {
