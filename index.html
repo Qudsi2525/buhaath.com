@@ -12,42 +12,35 @@
 <!-- خلفية Particles -->
 <div id="particles-js" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
 
-<div style="max-width: 900px; margin: 40px auto 40px auto; text-align: center;">
+<!-- ✨ تصميم واجهة البحث مع الخلفية -->
+<div style="max-width: 900px; margin: 60px auto; text-align: center;">
   <!-- الشعار -->
-  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 250px; height: auto; margin-bottom: 16px;">
+  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 240px; margin-bottom: 16px;">
 
   <!-- الجملة التعريفية -->
-  <p style="font-size: 14px; color: #333; margin-bottom: 20px;">
-    What is your research field today?
-  </p>
+  <p style="font-size: 15px; color: #fff; margin-bottom: 24px;">What is your research field today?</p>
 
   <!-- مربع البحث -->
-  <div style="background: #f5f5f7; border: 5px solid #f5f5f7; border-radius: 10px; box-shadow: 0 3px 5px rgba(1,1,1,1.1); padding: 5px 7px;">
-    <input
-      type="text"
-      id="query"
-      placeholder="Ask the research..."
-      style="width: 100%; padding: 1px 1px; border-radius: 1px; border: 1px solid #f5f5f7; font-size: 16px;"
-    />
-    <button id="searchBtn" onclick="search()" style="margin-top: 16px; padding: 10px 20px; font-size: 16px; border-radius: 10px; background-color: #7C4DFF; color: white; border: none; cursor: pointer;">
-      Search
-    </button>
+  <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 30px rgba(124, 77, 255, 0.3);">
+    <input type="text" id="query" placeholder="Ask the research..." style="width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ccc; background: rgba(255,255,255,0.2); color: #fff; margin-bottom: 10px;">
+    <button id="searchBtn" onclick="search()" style="padding: 12px 24px; border: none; background: #7C4DFF; border-radius: 14px; color: white;">Search</button>
   </div>
-</div>
 
-<div style="margin-top: 30px; text-align: center;">
-  <a href="register.html" style="margin: 8px; text-decoration: none;">➕ Register an account</a>
-  <a href="login.html" style="margin: 8px; text-decoration: none;">🔐 Login</a>
-  <a href="plagiarism.html" style="margin: 8px; text-decoration: none;">📄 Plagiarism Check</a>
-  <a href="citation.html" style="margin: 8px; text-decoration: none;">📝 Citation Generator</a>
-  <a href="grammar.html" style="margin: 8px; text-decoration: none;">✍️ Grammar Checker</a>
-  <a href="summary.html" style="margin: 8px; text-decoration: none;">📚 Text Summarizer</a>
+  <!-- روابط الأدوات -->
+  <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 24px;">
+    <a href="register.html" style="color:#fff; text-decoration:none;">➕ Register</a>
+    <a href="login.html" style="color:#fff; text-decoration:none;">🔐 Login</a>
+    <a href="plagiarism.html" style="color:#fff; text-decoration:none;">📄 Plagiarism</a>
+    <a href="citation.html" style="color:#fff; text-decoration:none;">📝 Citation</a>
+    <a href="grammar.html" style="color:#fff; text-decoration:none;">✍️ Grammar</a>
+    <a href="summary.html" style="color:#fff; text-decoration:none;">📚 Summary</a>
+  </div>
 </div>
 
 <!-- نتائج البحث -->
 <div id="results" style="max-width: 900px; margin: 20px auto; padding: 0 10px;"></div>
 
-<!-- Script البحث -->
+<!-- سكربت البحث -->
 <script>
   async function search() {
     const query = document.getElementById("query").value.trim();
@@ -85,7 +78,7 @@
         });
       }
     } catch (error) {
-      results.innerHTML = "<p>Error results. Please enter the search text in English.</p>";
+      results.innerHTML = "<p>Error: Please try again later or use English search terms.</p>";
     }
 
     searchBtn.textContent = "Search";
@@ -93,10 +86,8 @@
   }
 </script>
 
-<!-- مكتبة particles.js -->
+<!-- مكتبة الخلفية -->
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
-<!-- إعداد الخلفية -->
 <script>
   particlesJS("particles-js", {
     "particles": {
@@ -124,3 +115,4 @@
 
 </body>
 </html>
+
