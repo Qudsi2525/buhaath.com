@@ -112,19 +112,22 @@
   </div>
 
   <!-- الفلاتر -->
-  <div class="filters">
-    <select id="fieldFilter">
-      <option value="">📚 Filter by Field (optional)</option>
-      <option value="biology">Biology</option>
-      <option value="computer science">Computer Science</option>
-      <option value="medicine">Medicine</option>
-      <option value="engineering">Engineering</option>
-      <option value="psychology">Psychology</option>
-      <option value="economics">Economics</option>
-    </select>
-    <input type="number" id="yearFilter" placeholder="📆 Filter by Year (optional)" />
-    <button onclick="clearFilters()">🧹 Clear Filters</button>
-  </div>
+<div class="filters">
+  <select id="fieldFilter">
+    <option value="">📚 Filter by Field (optional)</option>
+    <option value="biology">Biology</option>
+    <option value="computer science">Computer Science</option>
+    <option value="medicine">Medicine</option>
+    <option value="engineering">Engineering</option>
+    <option value="psychology">Psychology</option>
+    <option value="economics">Economics</option>
+  </select>
+
+  <input type="number" id="yearFilter" placeholder="📆 Filter by Year (optional)" />
+
+  <button onclick="clearFilters()">🧹 Clear Filters</button>
+</div>
+
 
   <div id="results" style="margin-top: 30px;"></div>
 </div>
