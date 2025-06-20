@@ -1,59 +1,78 @@
-// فتح/إغلاق الفلاتر
-const sidebar = document.getElementById("sidebar");
-document.getElementById("filter-btn").onclick = () => sidebar.classList.add("open");
-document.getElementById("close-filters").onclick = () => sidebar.classList.remove("open");
+document.addEventListener('DOMContentLoaded', () => {
+  const filterBtn = document.getElementById('filter-btn');
+  const sidebar = document.getElementById('sidebar');
+  const closeBtn = document.getElementById('close-filters');
+  const searchBtn = document.getElementById('search-btn');
+  const results = document.getElementById('results');
 
-// البحث مع تطبيق الفلاتر
-document.getElementById("search-btn").onclick = async () => {
-  const query = document.getElementById("query").value.trim();
-  const year = document.getElementById("yearFilter").value;
-  const field = document.getElementById("fieldFilter").value;
-  const cites = document.getElementById("citationsFilter").value;
+  filterBtn.addEventListener('click', () => {
+    sidebar.style.right = '0';
+  });
 
-  if (!query) return alert("Please enter a search term.");
+  closeBtn.addEventListener('click', () => {
+    sidebar.style.right = '-320px';
+  });
 
-  sidebar.classList.remove("open");
+  document.getElementById('apply-filters').addEventListener('click', () => {
+    sidebar.style.right = '-320px';
+    search();
+  });
 
-  // تكوين رابط API
-  let url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=50&fields=title,abstract,authors,year,url,fieldsOfStudy,citationCount`;
-  const res = await fetch(url);
-  const data = await res.json();
+  searchBtn.addEventListener('click', () => {
+    search();
+  });
 
-  let results = data.data || [];
+  async function search() {
+    const query = document.getElementById('query').value.trim();
+    const year = document.getElementById('yearFilter').value;
+    const field = document.getElementById('fieldFilter').value;
+    const minCitations = parseInt(document.getElementById('citationsFilter').value) || 0;
 
-  // تطبيق فلتر السنة
-  if (year) {
-    const minYear = new Date().getFullYear() - parseInt(year, 10) + 1;
-    results = results.filter(p => p.year >= minYear);
-  }
-
-  // فلتر المجال
-  if (field) {
-    results = results.filter(p => p.fieldsOfStudy?.map(f=>f.toLowerCase()).includes(field));
-  }
-
-  // فلتر الاستشهادات
-  if (cites) {
-    results = results.filter(p => p.citationCount >= parseInt(cites, 10));
-  }
-
-  // عرض النتائج
-  const container = document.getElementById("results");
-  container.innerHTML = "";
-  if (!results.length) {
-    container.innerHTML = `<p>No results found.</p>`;
-  } else {
-    for (let paper of results) {
-      const div = document.createElement("div");
-      div.innerHTML = `
-        <h3><a href="${paper.url}" target="_blank">${paper.title}</a></h3>
-        <p><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
-        <p><strong>Year:</strong> ${paper.year}</p>
-        <p><strong>Citations:</strong> ${paper.citationCount}</p>
-        <p>${paper.abstract || ""}</p>
-      `;
-      div.className = "result-item";
-      container.appendChild(div);
+    if (!query) {
+      alert("Please enter a search term.");
+      return;
     }
+
+    searchBtn.textContent = "Searching...";
+    searchBtn.disabled = true;
+    results.innerHTML = "";
+
+    try {
+      const url = `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=50&fields=title,abstract,authors,year,fieldsOfStudy,citationCount`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data.data || data.data.length === 0) {
+        results.innerHTML = "<p>No results found.</p>";
+        return;
+      }
+
+      const filtered = data.data.filter(paper => {
+        const citations = paper.citationCount || 0;
+        const fieldMatch = !field || (paper.fieldsOfStudy && paper.fieldsOfStudy.includes(field));
+        const yearMatch = !year || (paper.year >= new Date().getFullYear() - parseInt(year));
+        return citations >= minCitations && fieldMatch && yearMatch;
+      });
+
+      filtered.forEach(paper => {
+        const div = document.createElement('div');
+        div.classList.add('result');
+        div.innerHTML = `
+          <h3><a href="https://www.semanticscholar.org/paper/${paper.paperId}" target="_blank">${paper.title}</a></h3>
+          <p><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
+          <p><strong>Year:</strong> ${paper.year || 'N/A'}</p>
+          <p><strong>Citations:</strong> ${paper.citationCount || 0}</p>
+          <p><strong>Field:</strong> ${paper.fieldsOfStudy ? paper.fieldsOfStudy.join(", ") : 'N/A'}</p>
+          <p><strong>Abstract:</strong> ${paper.abstract || "No abstract available."}</p>
+        `;
+        results.appendChild(div);
+      });
+
+    } catch (err) {
+      results.innerHTML = "<p>Error loading results. Try again later.</p>";
+    }
+
+    searchBtn.textContent = "🔍 Search";
+    searchBtn.disabled = false;
   }
-};
+});
