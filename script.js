@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const yearMatch = !year || (paper.year >= new Date().getFullYear() - parseInt(year));
         return citations >= minCitations && fieldMatch && yearMatch;
       });
-
+results.innerHTML = `<p>Found ${filtered.length} matching papers:</p>`;
    filtered.forEach(paper => {
   const div = document.createElement("div");
   div.className = "result";
