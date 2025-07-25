@@ -54,23 +54,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return citations >= minCitations && fieldMatch && yearMatch;
       });
 
-      filtered.forEach(paper => {
-        const div = document.createElement('div');
-        div.classList.add('result');
-        div.innerHTML = `
-          <h3><a href="https://www.semanticscholar.org/paper/${paper.paperId}" target="_blank">${paper.title}</a></h3>
-          <p><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
-          <p><strong>Year:</strong> ${paper.year || 'N/A'}</p>
-          <p><strong>Citations:</strong> ${paper.citationCount || 0}</p>
-          <p><strong>Field:</strong> ${paper.fieldsOfStudy ? paper.fieldsOfStudy.join(", ") : 'N/A'}</p>
-          <p><strong>Abstract:</strong> ${paper.abstract || "No abstract available."}</p>
-        `;
-        results.appendChild(div);
-      });
-
-    } catch (err) {
-      results.innerHTML = "<p>Error loading results. Try again later.</p>";
-    }
+   filtered.forEach(paper => {
+  const div = document.createElement("div");
+  div.className = "result";
+  div.innerHTML = `
+    <h3><a href="https://www.semanticscholar.org/paper/${paper.paperId}" target="_blank">${paper.title}</a></h3>
+    <p><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
+    <p><strong>Year:</strong> ${paper.year || 'N/A'}</p>
+    <p><strong>Citations:</strong> ${paper.citationCount || 0}</p>
+    <p><strong>Field:</strong> ${paper.fieldsOfStudy ? paper.fieldsOfStudy.join(", ") : 'N/A'}</p>
+    <p><strong>Abstract:</strong> ${paper.abstract || "No abstract available."}</p>
+    <a href="https://www.semanticscholar.org/paper/${paper.paperId}" target="_blank"
+       style="display:inline-block; margin-top: 10px; color: white; background: #7C4DFF; padding: 8px 16px; border-radius: 8px; text-decoration: none;">
+      🔗 View Full Paper
+    </a>
+  `;
+  results.appendChild(div);
+});
 
     searchBtn.textContent = "🔍 Search";
     searchBtn.disabled = false;
