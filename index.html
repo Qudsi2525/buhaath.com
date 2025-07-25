@@ -1,81 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BuhaaTh</title>
+  <link rel="icon" href="favicon.ico" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+      position: relative;
+      z-index: 0;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- زر Pro أعلى يسار -->
-  <div class="top-bar">
-    <button class="pro-btn">Pro</button>
+<!-- الخلفية التفاعلية -->
+<div id="particles-js"></div>
+
+<div style="max-width: 900px; margin: 40px auto 40px auto; text-align: center;">
+  <!-- الشعار -->
+  <img src="header-logo.png" alt="BuhaaTh Logo" style="max-width: 250px; height: auto; margin-bottom: 16px;">
+
+  <!-- الجملة التعريفية -->
+  <p style="font-size: 14px; color: #333; margin-bottom: 20px;">
+    What is your research field today?
+  </p>
+
+  <!-- مربع البحث -->
+  <div style="background: #f5f5f7; border: 5px solid #f5f5f7; border-radius: 10px; box-shadow: 0 3px 5px rgba(1,1,1,1.1); padding: 5px 7px;">
+    <input
+      type="text"
+      id="query"
+      placeholder="Ask the research..."
+      style="width: 100%; padding: 1px 1px; border-radius: 1px; border: 1px solid #f5f5f7; font-size: 16px;"
+    />
+    <button id="searchBtn" onclick="search()" style="margin-top: 16px; padding: 10px 20px; font-size: 16px; border-radius: 10px; background-color: #7C4DFF; color: white; border: none; cursor: pointer;">
+      Search
+    </button>
   </div>
+</div>
 
-  <!-- محتوى الصفحة -->
-  <div class="main-container">
-    <img src="header-logo.png" alt="BuhaaTh Logo" class="logo" />
+<!-- نتائج البحث -->
+<div id="results" style="max-width: 900px; margin: 20px auto; padding: 0 10px;"></div>
 
-    <!-- مربع البحث -->
-    <div class="search-box">
-      <input type="text" id="query" placeholder="Ask the research..." />
-      <div class="search-buttons">
-        <button id="filter-btn">Filter</button>
-        <button id="search-btn">🔍 Search</button>
-      </div>
+<!-- سكربت نتائج البحث -->
+<script>
+  async function search() {
+    const query = document.getElementById("query").value.trim();
+    const searchBtn = document.getElementById("searchBtn");
+    const results = document.getElementById("results");
 
-      <!-- الأدوات -->
-      <div class="tools">
-        <a href="summary.html">📚 Summarizer</a>
-        <a href="citation.html">📝 Citation</a>
-        <a href="plagiarism.html">📄 Plagiarism</a>
-        <a href="grammar.html">✍️ Grammar</a>
-      </div>
-    </div>
+    if (!query) {
+      alert("Please enter a search term.");
+      return;
+    }
 
-    <!-- النتائج -->
-    <div id="results"></div>
-  </div>
+    searchBtn.textContent = "Searching...";
+    searchBtn.disabled = true;
+    results.innerHTML = "";
 
-  <!-- نافذة الفلاتر الجانبية -->
-  <div id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <h3>Filters</h3>
-      <button id="close-filters">✖</button>
-    </div>
+    try {
+      const response = await fetch(`https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(query)}&limit=20&fields=title,abstract,authors,year`);
+      const data = await response.json();
 
-    <div class="filter-section">
-      <label>📅 Publish Year</label>
-      <select id="yearFilter">
-        <option value="">Any</option>
-        <option value="2">Past 2 years</option>
-        <option value="5">Past 5 years</option>
-        <option value="10">Past 10 years</option>
-      </select>
-    </div>
+      if (!data.data || data.data.length === 0) {
+        results.innerHTML = "<p>No results found.</p>";
+      } else {
+        data.data.forEach(paper => {
+          const div = document.createElement("div");
+          div.style = "background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left;";
 
-    <div class="filter-section">
-      <label>📚 Field of Study</label>
-      <select id="fieldFilter">
-        <option value="">Any</option>
-        <option value="computer science">Computer Science</option>
-        <option value="biology">Biology</option>
-        <option value="medicine">Medicine</option>
-        <option value="engineering">Engineering</option>
-        <option value="psychology">Psychology</option>
-        <option value="economics">Economics</option>
-      </select>
-    </div>
+          div.innerHTML = `
+            <h3 style="margin: 0 0 8px 0; font-size: 18px;">${paper.title}</h3>
+            <p style="margin: 4px 0; color: #555;"><strong>Authors:</strong> ${paper.authors.map(a => a.name).join(", ")}</p>
+            <p style="margin: 4px 0; color: #555;"><strong>Published:</strong> ${paper.year || "N/A"}</p>
+            <p style="margin-top: 8px; color: #333;"><strong>Abstract:</strong><br>${paper.abstract || "No abstract available."}</p>
+          `;
 
-    <div class="filter-section">
-      <label>📈 Min Citations</label>
-      <input type="number" id="citationsFilter" placeholder="e.g., 10" />
-    </div>
+          results.appendChild(div);
+        });
+      }
+    } catch (error) {
+      results.innerHTML = "<p>Error fetching results. Please try again later.</p>";
+    }
 
-    <button id="apply-filters">Apply Filters</button>
-  </div>
+    searchBtn.textContent = "Search";
+    searchBtn.disabled = false;
+  }
+</script>
 
-  <script src="scripts.js"></script>
+<!-- مكتبة particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<!-- إعداد الخلفية -->
+<script>
+  particlesJS("particles-js", {
+    "particles": {
+      "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+      "color": { "value": "#7C4DFF" },
+      "shape": { "type": "circle" },
+      "opacity": { "value": 0.3 },
+      "size": { "value": 4, "random": true },
+      "line_linked": {
+        "enable": true,
+        "distance": 120,
+        "color": "#7C4DFF",
+        "opacity": 0.4,
+        "width": 1
+      },
+      "move": { "enable": true, "speed": 2 }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": { "onhover": { "enable": true, "mode": "repulse" } }
+    },
+    "retina_detect": true
+  });
+</script>
+
 </body>
 </html>
+
