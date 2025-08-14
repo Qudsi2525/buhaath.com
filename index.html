@@ -1,46 +1,309 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BuhaaTh - Coming Soon</title>
+  <title>BuhaaTh - باحث</title>
   <style>
     body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1c1e21;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      padding: 0;
       text-align: center;
-      background: linear-gradient(135deg, #1a1a1a, #222);
+      position: relative;
     }
-    .message-box {
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .search-container {
       padding: 30px;
-      background-color: rgba(255,255,255,0.05);
-      border: 1px solid #444;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(124, 77, 255, 0.3);
+      background: #fff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin-bottom: 40px;
     }
-    h1 {
-      color: #7C4DFF;
+
+    .search-container h2 {
+        margin-top: 0;
+        font-size: 1.8rem;
+        color: #7C4DFF;
     }
-    p {
+
+    .search-container input {
+      width: calc(100% - 30px);
+      padding: 15px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+
+    .search-container input:focus {
+        border-color: #7C4DFF;
+        outline: none;
+    }
+
+    .search-container button {
+      width: 100%;
+      padding: 15px 20px;
       font-size: 1.1rem;
-      line-height: 1.6;
+      border-radius: 8px;
+      background-color: #7C4DFF;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s;
+    }
+
+    .search-container button:hover {
+        background-color: #6b3ee0;
+    }
+    
+    .search-container button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    #results {
+      text-align: left;
+    }
+    
+    .status-message {
+        font-size: 1.2rem;
+        color: #65676b;
+    }
+
+    .result {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      margin-bottom: 20px;
+      border-left: 5px solid #7C4DFF;
+    }
+
+    .result h3 {
+        margin-top: 0;
+    }
+
+    .result a {
+      color: #7C4DFF;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .result a:hover {
+        text-decoration: underline;
+    }
+
+    .result a.button-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: white;
+      background: #7C4DFF;
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: normal;
+    }
+    
+    .result a.button-link:hover {
+        background-color: #6b3ee0;
+        text-decoration: none;
+    }
+    
+    .result p {
+        line-height: 1.6;
+        color: #333;
+    }
+    
+    .result .meta-info {
+        font-size: 0.9rem;
+        color: #65676b;
+    }
+    
+    .abstract-toggle {
+        color: #7C4DFF;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .logo {
+      max-width: 220px;
+      margin: 40px auto 20px auto;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div class="message-box">
-    <h1>🚧 BuhaaTh</h1>
-    <p>
-      This platform is currently available for developers only.<br>
-      We are working hard to launch the public version soon.<br><br>
-      🚀 Stay tuned!
-    </p>
+
+<div id="particles-js"></div>
+
+<img src="header-logo.png" alt="BuhaaTh Logo" class="logo">
+
+<div class="container">
+  <div class="search-container">
+    <h2>🔍 بحث الأوراق العلمية</h2>
+    <input type="text" id="query" placeholder="أدخل موضوع البحث..." />
+    <button id="search-btn">🔍 ابحث</button>
   </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('search-btn');
+    const queryInput = document.getElementById('query');
+    const resultsContainer = document.getElementById('results');
+
+    const API_BASE_URL = 'https://api.semanticscholar.org/graph/v1/paper/search';
+
+    const toggleLoading = (isLoading) => {
+      searchBtn.disabled = isLoading;
+      queryInput.disabled = isLoading;
+      searchBtn.textContent = isLoading ? 'جاري البحث...' : '🔍 ابحث';
+    };
+
+    const showStatus = (message) => {
+      resultsContainer.innerHTML = `<p class="status-message">${message}</p>`;
+    };
+
+    const createPaperElement = (paper) => {
+      const div = document.createElement('div');
+      div.className = 'result';
+
+      const authors = paper.authors.map(a => a.name).join(', ') || 'غير معروف';
+      const year = paper.year || 'N/A';
+      const citationCount = paper.citationCount || 0;
+      const fieldsOfStudy = paper.fieldsOfStudy ? paper.fieldsOfStudy.join(', ') : 'N/A';
+      const abstract = paper.abstract || 'لا يوجد ملخص متاح.';
+      
+      const shortAbstract = abstract.length > 250 ? abstract.substring(0, 250) + '...' : abstract;
+      
+      div.innerHTML = `
+        <h3><a href="https://www.semanticscholar.org/paper/${paper.paperId}" target="_blank">${paper.title}</a></h3>
+        <p class="meta-info"><strong>المؤلفون:</strong> ${authors}</p>
+        <p class="meta-info"><strong>السنة:</strong> ${year} | <strong>الاقتباسات:</strong> ${citationCount} | <strong>المجال:</strong> ${fieldsOfStudy}</p>
+        <p class="abstract-content">${shortAbstract}</p>
+        ${abstract.length > 250 ? '<span class="abstract-toggle">اقرأ المزيد</span>' : ''}
+        <br>
+        <a href="https://www.semanticscholar.org/paper/${paper.paperId}" target="_blank" class="button-link">🔗 عرض البحث كاملاً</a>
+      `;
+      
+      if (abstract.length > 250) {
+        const toggle = div.querySelector('.abstract-toggle');
+        const content = div.querySelector('.abstract-content');
+        toggle.addEventListener('click', () => {
+          if (toggle.textContent === 'اقرأ المزيد') {
+            content.textContent = abstract;
+            toggle.textContent = 'إظهار أقل';
+          } else {
+            content.textContent = shortAbstract;
+            toggle.textContent = 'اقرأ المزيد';
+          }
+        });
+      }
+
+      return div;
+    };
+
+    const search = async () => {
+      const query = queryInput.value.trim();
+      if (!query) {
+        alert("الرجاء إدخال مصطلح للبحث.");
+        return;
+      }
+
+      toggleLoading(true);
+      showStatus('جاري جلب النتائج، يرجى الانتظار...');
+
+      try {
+        const params = new URLSearchParams({
+          query: query,
+          limit: 50,
+          fields: 'title,abstract,authors,year,fieldsOfStudy,citationCount,paperId'
+        });
+        
+        const url = `${API_BASE_URL}?${params.toString()}`;
+        const res = await fetch(url);
+
+        if (!res.ok) {
+          throw new Error(`!حدث خطأ في الشبكة: ${res.status} ${res.statusText}`);
+        }
+
+        const data = await res.json();
+
+        resultsContainer.innerHTML = ''; 
+
+        if (!data.data || data.data.length === 0) {
+          showStatus('لم يتم العثور على نتائج بحث مطابقة.');
+          return;
+        }
+
+        data.data.forEach(paper => {
+          resultsContainer.appendChild(createPaperElement(paper));
+        });
+
+      } catch (err) {
+        console.error('Error:', err);
+        showStatus('حدث خطأ أثناء تحميل النتائج. يرجى المحاولة مرة أخرى لاحقاً.');
+      } finally {
+        toggleLoading(false);
+      }
+    };
+
+    searchBtn.addEventListener('click', search);
+    queryInput.addEventListener('keyup', (event) => {
+      if (event.key === 'Enter') {
+        search();
+      }
+    });
+  });
+</script>
+
+<!-- مكتبة الخلفية التفاعلية -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+  particlesJS("particles-js", {
+    "particles": {
+      "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+      "color": { "value": "#7C4DFF" },
+      "shape": { "type": "circle" },
+      "opacity": { "value": 0.3 },
+      "size": { "value": 4, "random": true },
+      "line_linked": {
+        "enable": true,
+        "distance": 120,
+        "color": "#7C4DFF",
+        "opacity": 0.4,
+        "width": 1
+      },
+      "move": { "enable": true, "speed": 2 }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": { "onhover": { "enable": true, "mode": "repulse" } }
+    },
+    "retina_detect": true
+  });
+</script>
+
 </body>
 </html>
